@@ -1,0 +1,185 @@
+Loading dataset...
+Dataset shape: (134198, 64)
+Columns: ['Unnamed: 0', 'majority_target', 'statement', 'BinaryNumTarget', 'tweet', 'followers_count', 'friends_count', 'favourites_count', 'statuses_count', 'listed_count', 'following', 'embeddings', 'BotScore', 'BotScoreBinary', 'cred', 'normalize_influence', 'mentions', 'quotes', 'replies', 'retweets', 'favourites', 'hashtags', 'URLs', 'unique_count', 'total_count', 'ORG_percentage', 'NORP_percentage', 'GPE_percentage', 'PERSON_percentage', 'MONEY_percentage', 'DATE_percentage', 'CARDINAL_percentage', 'PERCENT_percentage', 'ORDINAL_percentage', 'FAC_percentage', 'LAW_percentage', 'PRODUCT_percentage', 'EVENT_percentage', 'TIME_percentage', 'LOC_percentage', 'WORK_OF_ART_percentage', 'QUANTITY_percentage', 'LANGUAGE_percentage', 'Word count', 'Max word length', 'Min word length', 'Average word length', 'present_verbs', 'past_verbs', 'adjectives', 'adverbs', 'adpositions', 'pronouns', 'TOs', 'determiners', 'conjunctions', 'dots', 'exclamation', 'questions', 'ampersand', 'capitals', 'digits', 'long_word_freq', 'short_word_freq']
+
+Target distribution:
+  True (1.0):  68930
+  Fake (0.0):  65268
+
+Selected HOW (Linguistic Structure) Features (21):
+  - Word count
+  - Max word length
+  - Min word length
+  - Average word length
+  - present_verbs
+  - past_verbs
+  - adjectives
+  - adverbs
+  - adpositions
+  - pronouns
+  - TOs
+  - determiners
+  - conjunctions
+  - dots
+  - exclamation
+  - questions
+  - ampersand
+  - capitals
+  - digits
+  - long_word_freq
+  - short_word_freq
+
+======================================================================
+PART 1: Clustering linguistic patterns in FAKE-labeled data
+======================================================================
+
+Fake data subset: 65268 rows
+After dropping NaN: 65268 rows
+Features scaled using StandardScaler.
+
+--- K-Means Clustering (Fake Data) ---
+C:\Users\intel\AppData\Roaming\Python\Python313\site-packages\joblib\externals\loky\backend\context.py:131: UserWarning: Could not find the number of physical cores for the following reason:
+[WinError 2] Le fichier spcifi est introuvable
+Returning the number of logical cores instead. You can silence this warning by setting LOKY_MAX_CPU_COUNT to the number of cores you want to use.
+  warnings.warn(
+  File "C:\Users\intel\AppData\Roaming\Python\Python313\site-packages\joblib\externals\loky\backend\context.py", line 247, in _count_physical_cores
+    cpu_count_physical = _count_physical_cores_win32()
+  File "C:\Users\intel\AppData\Roaming\Python\Python313\site-packages\joblib\externals\loky\backend\context.py", line 299, in _count_physical_cores_win32
+    cpu_info = subprocess.run(
+        "wmic CPU Get NumberOfCores /Format:csv".split(),
+        capture_output=True,
+        text=True,
+    )
+  File "C:\Python313\Lib\subprocess.py", line 554, in run
+    with Popen(*popenargs, **kwargs) as process:
+         ~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\subprocess.py", line 1039, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        pass_fds, cwd, env,
+                        ^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+                        gid, gids, uid, umask,
+                        ^^^^^^^^^^^^^^^^^^^^^^
+                        start_new_session, process_group)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\subprocess.py", line 1554, in _execute_child
+    hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+                       ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+                             # no special security
+                             ^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+                             cwd,
+                             ^^^^
+                             startupinfo)
+                             ^^^^^^^^^^^^
+  K=2: Inertia=1164169.22, Silhouette=0.1546
+  K=3: Inertia=1076836.37, Silhouette=0.1620
+  K=4: Inertia=1020523.70, Silhouette=0.1217
+  K=5: Inertia=975386.85, Silhouette=0.1226
+  K=6: Inertia=935605.65, Silhouette=0.1259
+  K=7: Inertia=899290.24, Silhouette=0.1229
+  K=8: Inertia=868065.99, Silhouette=0.0897
+  K=9: Inertia=842193.99, Silhouette=0.0932
+  K=10: Inertia=821046.77, Silhouette=0.0873
+Saved: fake_kmeans_elbow.png
+
+Best K by Silhouette Score: 3 (score=0.1620)
+
+K-Means Cluster Analysis (K=3):
+ KMeans_Cluster  count
+              0    438
+              1  28839
+              2  35991
+
+Key feature means per K-Means cluster:
+                Word count  Average word length  exclamation  questions   capitals  present_verbs  past_verbs  adjectives  long_word_freq  short_word_freq
+KMeans_Cluster                                                                                                                                            
+0                79.205479             9.089162     0.203196   0.312785  76.401826       3.095890    3.851598    4.349315       33.289954        21.255708
+1                23.932071             5.186687     0.283921   0.263289  12.814071       1.426298    1.212802    1.974964        1.685322        14.013558
+2                45.496596             4.832906     0.355005   0.406074  14.443833       3.618349    2.566419    3.669112        2.383124        28.953238
+Saved: fake_kmeans_clusters.png
+
+--- Hierarchical Clustering (Fake Data) ---
+Sampled 10000 rows for hierarchical clustering.
+Saved: fake_hierarchical_dendrogram.png
+Saved: fake_hierarchical_merge_distance.png
+
+Hierarchical Cluster Analysis (K=3):
+ HC_Cluster  count
+          0   6983
+          1   2953
+          2     64
+
+Key feature means per Hierarchical cluster:
+            Word count  Average word length  exclamation  questions   capitals  present_verbs  past_verbs  adjectives  long_word_freq  short_word_freq
+HC_Cluster                                                                                                                                            
+0            42.142059             4.909296     0.410998   0.419734  16.034656       3.184018    2.337534    3.356007        2.353000        26.457397
+1            20.714189             5.203202     0.091771   0.180494   8.301727       1.339316    1.060278    1.801219        1.424653        12.108026
+2            87.390625             8.919440     0.171875   0.468750  79.000000       3.625000    4.281250    4.843750       35.843750        24.046875
+Saved: fake_hierarchical_clusters.png
+
+--- K-Means vs Hierarchical Comparison (Fake Data) ---
+K-Means Silhouette Score:      0.1599
+Hierarchical Silhouette Score:  0.0990
+
+K-Means cluster sizes:      [np.int64(76), np.int64(4466), np.int64(5458)]
+Hierarchical cluster sizes: [np.int64(64), np.int64(2953), np.int64(6983)]
+Saved: fake_comparison_kmeans_vs_hierarchical.png
+
+======================================================================
+PART 2 (Practice): Clustering linguistic patterns in tweets labeled 'Fake'
+======================================================================
+Full dataset (after dropping NaN): 134198 rows
+
+--- K-Means on ALL data (Fake + True) ---
+  K=2: Inertia=2380975.13, Silhouette=0.1674
+  K=3: Inertia=2256941.24, Silhouette=0.1474
+  K=4: Inertia=2110917.60, Silhouette=0.1393
+  K=5: Inertia=1983268.36, Silhouette=0.1395
+  K=6: Inertia=1896175.04, Silhouette=0.1373
+  K=7: Inertia=1829431.29, Silhouette=0.0818
+  K=8: Inertia=1751560.26, Silhouette=0.0889
+  K=9: Inertia=1678250.88, Silhouette=0.0920
+  K=10: Inertia=1625258.18, Silhouette=0.0955
+
+Best K for all data: 2 (Silhouette=0.1674)
+Saved: all_kmeans_elbow.png
+
+K-Means cluster composition (All Data, K=2):
+                count  mean_target  FakeNewsPropensity
+KMeans_Cluster                                        
+0               72028     0.479522            0.520478
+1               62170     0.553177            0.446823
+
+Key linguistic features per cluster (All Data):
+                Word count  Average word length  exclamation  questions   capitals  present_verbs  past_verbs  adjectives  long_word_freq  short_word_freq
+KMeans_Cluster                                                                                                                                            
+0                45.540484             4.940341     0.297967   0.372647  14.629061       3.425043    2.423669    3.906620        2.815572        28.327414
+1                22.955863             5.191397     0.214734   0.231269  10.749783       1.325430    1.103796    2.023677        1.593791        13.457584
+Saved: all_kmeans_clusters.png
+
+--- Hierarchical on ALL data ---
+Saved: all_hierarchical_dendrogram.png
+
+Hierarchical cluster composition (All Data, K=2):
+            count  mean_target  FakeNewsPropensity
+HC_Cluster                                        
+0            6668     0.491752            0.508248
+1            3332     0.570828            0.429172
+
+Key linguistic features per HC cluster (All Data):
+            Word count  Average word length  exclamation  questions   capitals  present_verbs  past_verbs  adjectives  long_word_freq  short_word_freq
+HC_Cluster                                                                                                                                            
+0            42.303239             5.007425     0.324235   0.357678  15.146821       3.032693    2.209358    3.630024        2.781044        25.991452
+1            20.726891             5.182305     0.151261   0.229292   8.281212       1.217887    0.997899    1.820528        1.338836        12.284214
+
+All Data Comparison:
+K-Means Silhouette Score:      0.1599
+Hierarchical Silhouette Score:  0.1075
+
+======================================================================
+ANALYSIS COMPLETE
+======================================================================
+All plots saved. See Lab Report for interpretation.
+

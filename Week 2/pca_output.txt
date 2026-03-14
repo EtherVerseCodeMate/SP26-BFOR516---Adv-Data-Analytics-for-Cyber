@@ -1,0 +1,188 @@
+================================================================================
+STEP 1: LOADING AND PREPARING THE DATASET
+================================================================================
+Dataset loaded successfully!
+Dataset shape: (134198, 64)
+Columns: ['Unnamed: 0', 'majority_target', 'statement', 'BinaryNumTarget', 'tweet', 'followers_count', 'friends_count', 'favourites_count', 'statuses_count', 'listed_count', 'following', 'embeddings', 'BotScore', 'BotScoreBinary', 'cred', 'normalize_influence', 'mentions', 'quotes', 'replies', 'retweets', 'favourites', 'hashtags', 'URLs', 'unique_count', 'total_count', 'ORG_percentage', 'NORP_percentage', 'GPE_percentage', 'PERSON_percentage', 'MONEY_percentage', 'DATE_percentage', 'CARDINAL_percentage', 'PERCENT_percentage', 'ORDINAL_percentage', 'FAC_percentage', 'LAW_percentage', 'PRODUCT_percentage', 'EVENT_percentage', 'TIME_percentage', 'LOC_percentage', 'WORK_OF_ART_percentage', 'QUANTITY_percentage', 'LANGUAGE_percentage', 'Word count', 'Max word length', 'Min word length', 'Average word length', 'present_verbs', 'past_verbs', 'adjectives', 'adverbs', 'adpositions', 'pronouns', 'TOs', 'determiners', 'conjunctions', 'dots', 'exclamation', 'questions', 'ampersand', 'capitals', 'digits', 'long_word_freq', 'short_word_freq']
+
+After dropping non-numeric and target columns:
+Feature matrix shape: (134198, 58)
+Number of features: 58
+Number of samples: 134198
+
+Missing values filled with 0
+Remaining NaN values: 0
+
+================================================================================
+STEP 2: STANDARDIZING THE FEATURES
+================================================================================
+Features standardized using StandardScaler
+Scaled data shape: (134198, 58)
+Mean of standardized features (should be ~0): 0.000000
+Std of standardized features (should be ~1): 1.000000
+
+WHY STANDARDIZATION IS IMPORTANT:
+--------------------------------------------------------------------------------
+
+Standardization is crucial before performing PCA for the following reasons:
+
+1. SCALE SENSITIVITY: PCA is sensitive to the scale of features. Features with larger
+   variances will dominate the principal components, even if they are not the most
+   informative for the analysis.
+
+2. VARIANCE EQUALITY: By standardizing (mean=0, std=1), we ensure all features
+   contribute equally to the analysis based on their correlation structure, not
+   their original measurement scales.
+
+3. FAIR COMPARISON: In this dataset, different features may have vastly different
+   ranges (e.g., word counts vs. sentiment scores). Standardization puts them on
+   a level playing field.
+
+4. NUMERICAL STABILITY: Standardization can improve the numerical stability of
+   the PCA algorithm, leading to more reliable results.
+
+================================================================================
+
+================================================================================
+STEP 3: APPLYING PCA
+================================================================================
+PCA applied with 90% variance retention
+Transformed data shape: (134198, 40)
+Number of components kept: 40
+Original number of features: 58
+Dimensionality reduction: 58 -> 40
+Compression ratio: 31.03%
+
+================================================================================
+STEP 4: VISUALIZING PCA RESULTS
+================================================================================
+Plot saved as 'truth_seeker.png'
+Visualization complete!
+
+================================================================================
+STEP 5: EXPLAINED VARIANCE ANALYSIS
+================================================================================
+Number of components kept: 40
+
+Explained Variance Ratio by Component:
+--------------------------------------------------------------------------------
+  PC1: 8.2847% of variance
+  PC2: 5.2502% of variance
+  PC3: 4.8137% of variance
+  PC4: 4.6219% of variance
+  PC5: 3.5106% of variance
+  PC6: 3.3085% of variance
+  PC7: 2.8567% of variance
+  PC8: 2.5733% of variance
+  PC9: 2.4377% of variance
+  PC10: 2.3960% of variance
+  PC11: 2.1423% of variance
+  PC12: 2.0422% of variance
+  PC13: 1.9961% of variance
+  PC14: 1.8775% of variance
+  PC15: 1.8541% of variance
+  PC16: 1.8431% of variance
+  PC17: 1.8031% of variance
+  PC18: 1.7727% of variance
+  PC19: 1.7610% of variance
+  PC20: 1.7528% of variance
+  PC21: 1.7414% of variance
+  PC22: 1.7300% of variance
+  PC23: 1.7222% of variance
+  PC24: 1.7192% of variance
+  PC25: 1.7133% of variance
+  PC26: 1.7110% of variance
+  PC27: 1.7041% of variance
+  PC28: 1.6999% of variance
+  PC29: 1.6844% of variance
+  PC30: 1.6636% of variance
+  PC31: 1.6197% of variance
+  PC32: 1.6011% of variance
+  PC33: 1.5786% of variance
+  PC34: 1.4818% of variance
+  PC35: 1.4761% of variance
+  PC36: 1.4437% of variance
+  PC37: 1.3901% of variance
+  PC38: 1.3657% of variance
+  PC39: 1.2990% of variance
+  PC40: 1.2414% of variance
+
+Total variance captured: 90.4846%
+
+================================================================================
+EFFECTIVENESS ANALYSIS:
+--------------------------------------------------------------------------------
+
+PCA reduced the dataset from 58 features to 40 principal components,
+achieving a 31.03% reduction in dimensionality while
+retaining 90.48% of the total variance.
+
+This represents an EFFECTIVE dimensionality reduction because:
+1. We retained 90%+ of the information with significantly fewer features
+2. The compression ratio indicates substantial simplification of the data
+3. This reduction can improve model training speed and reduce overfitting
+4. The visualization shows some separation between fake and real news in the
+   first two principal components, suggesting the reduced representation
+   captures meaningful patterns
+
+================================================================================
+
+================================================================================
+STEP 6: FEATURE CONTRIBUTION ANALYSIS
+================================================================================
+Top 10 Features Contributing to PC1:
+--------------------------------------------------------------------------------
+        Feature  PC1_Loading  Abs_Loading
+     Word count     0.434417     0.434417
+short_word_freq     0.404580     0.404580
+    adpositions     0.278407     0.278407
+  present_verbs     0.257532     0.257532
+       pronouns     0.235439     0.235439
+     adjectives     0.228502     0.228502
+        adverbs     0.219452     0.219452
+           dots     0.213483     0.213483
+   conjunctions     0.211077     0.211077
+     past_verbs     0.204675     0.204675
+
+
+Top 10 Features Contributing to PC2:
+--------------------------------------------------------------------------------
+            Feature  PC2_Loading  Abs_Loading
+             quotes     0.500074     0.500074
+           retweets     0.478189     0.478189
+         favourites     0.472741     0.472741
+            replies     0.332382     0.332382
+normalize_influence     0.203937     0.203937
+       listed_count     0.168802     0.168802
+    followers_count     0.156760     0.156760
+               cred     0.152551     0.152551
+      friends_count     0.116555     0.116555
+     statuses_count     0.115607     0.115607
+
+
+================================================================================
+FEATURE CONTRIBUTION INTERPRETATION:
+--------------------------------------------------------------------------------
+
+The loadings indicate which original features contribute most to each principal
+component. Features with high absolute loadings are the most influential in
+defining that component's direction in feature space.
+
+Top 5 features most associated with distinguishing fake news (based on PC1):
+
+  Word count: Loading = 0.434417
+  short_word_freq: Loading = 0.404580
+  adpositions: Loading = 0.278407
+  present_verbs: Loading = 0.257532
+  pronouns: Loading = 0.235439
+
+These features represent the linear combinations that maximize variance in the
+dataset. A positive loading suggests the feature increases along PC1, while a
+negative loading suggests it decreases. By examining how fake vs real news
+separate along PC1 in the scatter plot, we can interpret whether high or low
+values of these features are associated with fake news.
+
+================================================================================
+
+ANALYSIS COMPLETE!
+================================================================================

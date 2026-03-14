@@ -1,0 +1,141 @@
+Loading dataset...
+Dataset shape: (134198, 64)
+Columns: ['Unnamed: 0', 'majority_target', 'statement', 'BinaryNumTarget', 'tweet', 'followers_count', 'friends_count', 'favourites_count', 'statuses_count', 'listed_count', 'following', 'embeddings', 'BotScore', 'BotScoreBinary', 'cred', 'normalize_influence', 'mentions', 'quotes', 'replies', 'retweets', 'favourites', 'hashtags', 'URLs', 'unique_count', 'total_count', 'ORG_percentage', 'NORP_percentage', 'GPE_percentage', 'PERSON_percentage', 'MONEY_percentage', 'DATE_percentage', 'CARDINAL_percentage', 'PERCENT_percentage', 'ORDINAL_percentage', 'FAC_percentage', 'LAW_percentage', 'PRODUCT_percentage', 'EVENT_percentage', 'TIME_percentage', 'LOC_percentage', 'WORK_OF_ART_percentage', 'QUANTITY_percentage', 'LANGUAGE_percentage', 'Word count', 'Max word length', 'Min word length', 'Average word length', 'present_verbs', 'past_verbs', 'adjectives', 'adverbs', 'adpositions', 'pronouns', 'TOs', 'determiners', 'conjunctions', 'dots', 'exclamation', 'questions', 'ampersand', 'capitals', 'digits', 'long_word_freq', 'short_word_freq']
+
+Target distribution:
+  True (1.0):  68930
+  Fake (0.0):  65268
+
+Selected HOW (Linguistic Structure) Features (21):
+  - Word count
+  - Max word length
+  - Min word length
+  - Average word length
+  - present_verbs
+  - past_verbs
+  - adjectives
+  - adverbs
+  - adpositions
+  - pronouns
+  - TOs
+  - determiners
+  - conjunctions
+  - dots
+  - exclamation
+  - questions
+  - ampersand
+  - capitals
+  - digits
+  - long_word_freq
+  - short_word_freq
+
+======================================================================
+PART 1: Clustering linguistic patterns in FAKE-labeled data
+======================================================================
+
+Fake data subset: 65268 rows
+After dropping NaN: 65268 rows
+Features scaled using StandardScaler.
+
+--- K-Means Clustering (Fake Data) ---
+C:\Users\intel\AppData\Roaming\Python\Python313\site-packages\joblib\externals\loky\backend\context.py:131: UserWarning: Could not find the number of physical cores for the following reason:
+[WinError 2] Le fichier spécifié est introuvable
+Returning the number of logical cores instead. You can silence this warning by setting LOKY_MAX_CPU_COUNT to the number of cores you want to use.
+  warnings.warn(
+  File "C:\Users\intel\AppData\Roaming\Python\Python313\site-packages\joblib\externals\loky\backend\context.py", line 247, in _count_physical_cores
+    cpu_count_physical = _count_physical_cores_win32()
+  File "C:\Users\intel\AppData\Roaming\Python\Python313\site-packages\joblib\externals\loky\backend\context.py", line 299, in _count_physical_cores_win32
+    cpu_info = subprocess.run(
+        "wmic CPU Get NumberOfCores /Format:csv".split(),
+        capture_output=True,
+        text=True,
+    )
+  File "C:\Python313\Lib\subprocess.py", line 554, in run
+    with Popen(*popenargs, **kwargs) as process:
+         ~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\subprocess.py", line 1039, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        pass_fds, cwd, env,
+                        ^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+                        gid, gids, uid, umask,
+                        ^^^^^^^^^^^^^^^^^^^^^^
+                        start_new_session, process_group)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\subprocess.py", line 1554, in _execute_child
+    hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+                       ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+                             # no special security
+                             ^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+                             cwd,
+                             ^^^^
+                             startupinfo)
+                             ^^^^^^^^^^^^
+  K=2: Inertia=1164169.22, Silhouette=0.1546
+  K=3: Inertia=1076836.37, Silhouette=0.1620
+  K=4: Inertia=1020523.70, Silhouette=0.1217
+  K=5: Inertia=975386.85, Silhouette=0.1226
+  K=6: Inertia=935605.65, Silhouette=0.1259
+  K=7: Inertia=899290.24, Silhouette=0.1229
+  K=8: Inertia=868065.99, Silhouette=0.0897
+  K=9: Inertia=842193.99, Silhouette=0.0932
+  K=10: Inertia=821046.77, Silhouette=0.0873
+Saved: fake_kmeans_elbow.png
+
+Best K by Silhouette Score: 3 (score=0.1620)
+
+K-Means Cluster Analysis (K=3):
+ KMeans_Cluster  count
+              0    438
+              1  28839
+              2  35991
+
+Key feature means per K-Means cluster:
+                Word count  Average word length  exclamation  questions   capitals  present_verbs  past_verbs  adjectives  long_word_freq  short_word_freq
+KMeans_Cluster                                                                                                                                            
+0                79.205479             9.089162     0.203196   0.312785  76.401826       3.095890    3.851598    4.349315       33.289954        21.255708
+1                23.932071             5.186687     0.283921   0.263289  12.814071       1.426298    1.212802    1.974964        1.685322        14.013558
+2                45.496596             4.832906     0.355005   0.406074  14.443833       3.618349    2.566419    3.669112        2.383124        28.953238
+Saved: fake_kmeans_clusters.png
+
+--- Hierarchical Clustering (Fake Data) ---
+Sampled 10000 rows for hierarchical clustering.
+Traceback (most recent call last):
+  File "C:\Users\intel\OneDrive - University at Albany - SUNY\Documents\MSDF\Spring 2026\SP26 BFOR516 - Adv Data Analytics for Cyber\Week 4\unsupervised_clustering_lab.py", line 178, in <module>
+    dendrogram = sch.dendrogram(sch.linkage(X_fake_sample_scaled, method='ward'))
+  File "C:\Users\intel\AppData\Roaming\Python\Python313\site-packages\scipy\cluster\hierarchy.py", line 3493, in dendrogram
+    _plot_dendrogram(icoord_list, dcoord_list, ivl, p, n, mh, orientation,
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     no_labels, color_list,
+                     ^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+                     ax=ax,
+                     ^^^^^^
+                     above_threshold_color=above_threshold_color)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\intel\AppData\Roaming\Python\Python313\site-packages\scipy\cluster\hierarchy.py", line 2959, in _plot_dendrogram
+    ax.set_xticks(iv_ticks)
+    ~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\intel\AppData\Roaming\Python\Python313\site-packages\matplotlib\axes\_base.py", line 74, in wrapper
+    return get_method(self)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\intel\AppData\Roaming\Python\Python313\site-packages\matplotlib\axis.py", line 2218, in set_ticks
+    result = self._set_tick_locations(ticks, minor=minor)
+  File "C:\Users\intel\AppData\Roaming\Python\Python313\site-packages\matplotlib\axis.py", line 2170, in _set_tick_locations
+    return self.get_major_ticks(len(ticks))
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\intel\AppData\Roaming\Python\Python313\site-packages\matplotlib\axis.py", line 1666, in get_major_ticks
+    self._copy_tick_props(self.majorTicks[0], tick)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\intel\AppData\Roaming\Python\Python313\site-packages\matplotlib\axis.py", line 1610, in _copy_tick_props
+    dest.label1.update_from(src.label1)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\intel\AppData\Roaming\Python\Python313\site-packages\matplotlib\text.py", line 349, in update_from
+    self._fontproperties = other._fontproperties.copy()
+                           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\intel\AppData\Roaming\Python\Python313\site-packages\matplotlib\font_manager.py", line 961, in copy
+    def copy(self):
+    
+KeyboardInterrupt
