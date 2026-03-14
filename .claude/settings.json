@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(find \"c:/Users/intel/OneDrive - University at Albany - SUNY/Documents/MSDF/Spring 2026/SP26 BFOR516 - Adv Data Analytics for Cyber/Week\"* -maxdepth 1 -type f \\\\\\( -name \"*.ipynb\" -o -name \"*.py\" \\\\\\))"
+      "Bash(find \"c:/Users/intel/OneDrive - University at Albany - SUNY/Documents/MSDF/Spring 2026/SP26 BFOR516 - Adv Data Analytics for Cyber/Week\"* -maxdepth 1 -type f \\\\\\( -name \"*.ipynb\" -o -name \"*.py\" \\\\\\))",
+      "Read(//c/Users/intel//**)",
+      "Read(//c/Users/intel/**)"
     ]
   }
 }
