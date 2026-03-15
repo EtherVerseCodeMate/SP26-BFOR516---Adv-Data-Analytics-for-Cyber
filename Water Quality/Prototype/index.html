@@ -1,138 +1,706 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WaterTruth — Water Safety at Your Address</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WaterTruth — Water Safety at Your Address</title>
+  <style>
+    :root {
+      --primary:    #1a56db;
+      --safe:       #16a34a;
+      --safe-bg:    #ecfdf5;
+      --warn:       #d97706;
+      --warn-bg:    #fffbeb;
+      --danger:     #dc2626;
+      --danger-bg:  #fef2f2;
+      --bg:         #f8fafc;
+      --text:       #1e293b;
+      --muted:      #64748b;
+      --border:     #e2e8f0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding-bottom: 40px;
+      transition: background 0.35s ease;
+    }
+
+    .container { max-width: 440px; margin: 0 auto; padding: 16px; }
+
+    /* ── View Toggle ─────────────────────────── */
+    .view-toggle {
+      display: flex;
+      background: var(--border);
+      padding: 3px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      gap: 3px;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 8px;
+      border-radius: 7px;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      background: transparent;
+      color: var(--muted);
+      transition: all 0.15s;
+    }
+    .tab-btn.active {
+      background: white;
+      color: var(--text);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    /* ── Address Selector ────────────────────── */
+    .search-box {
+      background: white;
+      padding: 14px 16px;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      margin-bottom: 16px;
+    }
+    label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      margin-top: 6px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 15px;
+      background: white;
+      color: var(--text);
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 18px;
+    }
+
+    /* ── EPA API Status Banner ───────────────── */
+    .api-banner {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      margin-bottom: 12px;
+      transition: all 0.4s ease;
+    }
+    .api-loading { background: #f1f5f9; color: var(--muted); }
+    .api-live    { background: #ecfdf5; color: #065f46; }
+    .api-cached  { background: #f8fafc; color: #94a3b8; border: 1px solid var(--border); }
+
+    .api-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .api-loading .api-dot { background: #94a3b8; animation: blink 1.2s ease-in-out infinite; }
+    .api-live    .api-dot { background: var(--safe); }
+    .api-cached  .api-dot { background: #cbd5e1; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.35} }
+
+    /* ── Status Header ───────────────────────── */
+    .header {
+      background: var(--primary);
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      transition: background 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .header::after {
+      content: '';
+      position: absolute;
+      top: -40%; right: -10%;
+      width: 180px; height: 180px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .header.is-warn   { background: #b45309; }
+    .header.is-danger { background: var(--danger); }
+    .header h1   { font-size: 22px; margin-bottom: 2px; }
+    .h-address   { font-size: 15px; opacity: 0.95; margin-top: 2px; }
+    .h-city      { font-size: 13px; opacity: 0.80; margin-top: 1px; }
+
+    /* ── Timestamp ───────────────────────────── */
+    .timestamp { font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+
+    /* ── Contaminant Cards ───────────────────── */
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      border-left: 5px solid #cbd5e1;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+    }
+    .status-safe   { border-left-color: var(--safe); }
+    .status-warn   { border-left-color: var(--warn); }
+    .status-danger { border-left-color: var(--danger); }
+
+    .card-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+      font-size: 15px;
+    }
+    .card-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+    .status-safe   .card-badge { background: var(--safe-bg);   color: #065f46; }
+    .status-warn   .card-badge { background: var(--warn-bg);   color: #92400e; }
+    .status-danger .card-badge { background: var(--danger-bg); color: #991b1b; }
+
+    .card-level  { font-size: 13px; color: var(--muted); margin: 4px 0; }
+    .card-verdict { font-size: 14px; font-weight: 600; margin-top: 6px; }
+    .status-safe   .card-verdict { color: var(--safe); }
+    .status-warn   .card-verdict { color: var(--warn); }
+    .status-danger .card-verdict { color: var(--danger); }
+    .card-desc {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 6px;
+      padding-top: 6px;
+      border-top: 1px solid #f1f5f9;
+    }
+
+    /* ── Filter Advisory ─────────────────────── */
+    .filter-advisory {
+      background: var(--danger-bg);
+      border: 1px solid #fca5a5;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 13px;
+      color: #7f1d1d;
+      margin-bottom: 12px;
+      line-height: 1.65;
+    }
+    .hidden { display: none !important; }
+
+    /* ── Health Guidance Box ─────────────────── */
+    .action-box {
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-size: 14px;
+      margin-bottom: 12px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e3a8a;
+      transition: all 0.35s;
+    }
+    .action-box.is-warn   { background: var(--warn-bg);   border-color: #fde68a; color: #78350f; }
+    .action-box.is-danger { background: var(--danger-bg); border-color: #fca5a5; color: #7f1d1d; }
+
+    /* ── Service Line ────────────────────────── */
+    .service-info {
+      background: white;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--border);
+      transition: all 0.35s;
+    }
+    .service-info.is-warn   { background: var(--warn-bg);   border-color: #fde68a; border-left-color: var(--warn); }
+    .service-info.is-danger { background: var(--danger-bg); border-color: #fca5a5; border-left-color: var(--danger); }
+    .service-info h3    { font-size: 14px; margin-bottom: 6px; }
+    .service-status     { font-weight: 700; font-size: 14px; }
+    .service-desc       { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .service-link       { display: inline-block; font-size: 12px; color: var(--primary); font-weight: 600; margin-top: 6px; text-decoration: none; }
+    .service-link:hover { text-decoration: underline; }
+
+    /* ── Buttons ─────────────────────────────── */
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 13px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 15px;
+      text-align: center;
+      border: none;
+      cursor: pointer;
+      margin-bottom: 10px;
+      transition: filter 0.15s;
+    }
+    .btn:hover         { filter: brightness(0.92); }
+    .btn-primary       { background: var(--primary); color: white; }
+    .btn-secondary     { background: white; color: var(--text); border: 1.5px solid var(--border); }
+
+    /* ── Manager Portal ──────────────────────── */
+    .manager-header {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+      border-left: 5px solid var(--warn);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+    }
+    .manager-header h2    { font-size: 16px; margin-bottom: 4px; }
+    .manager-header .sub  { font-size: 13px; color: var(--muted); }
+    .manager-header .flag { font-size: 14px; font-weight: 700; color: var(--warn); margin-top: 4px; }
+
+    .unit-table {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+    .unit-row {
+      display: grid;
+      grid-template-columns: 1.5rem 2rem 1fr 1fr 1fr;
+      gap: 6px;
+      padding: 10px 14px;
+      border-bottom: 1px solid #f1f5f9;
+      align-items: center;
+      font-size: 13px;
+    }
+    .unit-row:last-child  { border-bottom: none; }
+    .unit-row.head-row    {
+      background: #f8fafc;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .unit-id    { font-weight: 600; }
+    .act-none   { color: var(--muted); }
+    .act-warn   { color: #92400e; font-weight: 600; }
+    .act-danger { color: #991b1b; font-weight: 700; }
+
+    .alert-box {
+      background: var(--danger-bg);
+      border: 1px solid #fca5a5;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 13px;
+      color: #991b1b;
+      margin-bottom: 14px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    /* ── Footer ──────────────────────────────── */
+    .footer {
+      text-align: center;
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 24px;
+      line-height: 1.9;
+    }
+  </style>
 </head>
 <body>
+<div class="container">
 
-    <div class="app-container">
+  <!-- ── View Toggle ────────────────────── -->
+  <div class="view-toggle">
+    <button class="tab-btn active" id="tabResident" onclick="switchView('resident')">Resident View</button>
+    <button class="tab-btn"        id="tabManager"  onclick="switchView('manager')">Manager Portal</button>
+  </div>
 
-        <div class="view-toggle">
-            <button class="view-btn active" id="btn-resident" onclick="switchView('resident')">Resident View</button>
-            <button class="view-btn" id="btn-manager" onclick="switchView('manager')">Manager Portal</button>
-        </div>
+  <!-- ── Address Selector ──────────────── -->
+  <div class="search-box">
+    <label for="addressSelector">Select Pilot Address</label>
+    <select id="addressSelector" onchange="updateDashboard()">
+      <option value="river">247 River St (Safe Baseline)</option>
+      <option value="congress">123 Congress St (Elevated)</option>
+      <option value="ferry">89 Ferry St (CRITICAL LEAD)</option>
+    </select>
+  </div>
 
-        <header class="header">
-            <div>
-                <h1>💧 WaterTruth</h1>
-                <p id="current-address-label">247 River St, Troy NY 12180</p>
-            </div>
-        </header>
+  <!-- ════════════════════════════════════
+       RESIDENT VIEW
+       ════════════════════════════════════ -->
+  <main id="residentView">
 
-        <section class="address-selector">
-            <select id="address-search" onchange="handleAddressChange()">
-                <option value="247 River St">247 River St (Safe Baseline)</option>
-                <option value="123 Congress St">123 Congress St (Historical Lead)</option>
-                <option value="89 Ferry St">89 Ferry St (Active Alert)</option>
-            </select>
-        </section>
-
-        <!-- Resident View -->
-        <main id="resident-view" class="resident-view active">
-            <p class="timestamp">
-                📍 Last updated: 2 hours ago · Troy Water Authority data
-            </p>
-
-            <div id="status-container">
-                <!-- Cards injected by app.js -->
-            </div>
-
-            <div class="service-info" id="service-info">
-                <h3>🔍 Service Line Status</h3>
-                <p class="service-status-line">Status: <span id="line-status">UNKNOWN</span></p>
-                <p class="service-desc" id="line-desc">
-                    Replacement scheduled for Q3 2026. City grant active.
-                </p>
-                <a href="#" class="service-link">What to do while you wait →</a>
-            </div>
-
-            <div class="actions">
-                <button class="btn btn-primary">📤 Share This Status with Landlord</button>
-                <button class="btn btn-secondary">📞 Contact Water Dept</button>
-            </div>
-        </main>
-
-        <!-- Manager View -->
-        <main id="manager-view" class="manager-view">
-            <div class="status-card warn" style="margin-bottom: 1.5rem;">
-                <div class="card-header">
-                    <span class="contaminant-name">⚠️ Building Status: Monitor</span>
-                    <span class="status-badge">ELEVATED</span>
-                </div>
-                <div class="verdict" style="color: #d97706;">Action required in 1 unit</div>
-                <div class="level-info" style="margin-top: 0.5rem;">Last full test: Jan 14, 2026 · 247 River St, Troy NY 12180</div>
-            </div>
-
-            <div class="unit-list">
-                <div class="unit-row header-row">
-                    <span></span>
-                    <span>Unit</span>
-                    <span>Lead</span>
-                    <span>Iron</span>
-                    <span>Action</span>
-                </div>
-                <div class="unit-row">
-                    <span>✅</span>
-                    <span class="unit-id">1A</span>
-                    <span>2.1 ppb</span>
-                    <span>0.38 mg/L</span>
-                    <span class="action-none">None</span>
-                </div>
-                <div class="unit-row">
-                    <span>✅</span>
-                    <span class="unit-id">1B</span>
-                    <span>1.8 ppb</span>
-                    <span>0.11 mg/L</span>
-                    <span class="action-none">None</span>
-                </div>
-                <div class="unit-row">
-                    <span>⚠️</span>
-                    <span class="unit-id">2A</span>
-                    <span>9.4 ppb</span>
-                    <span>0.55 mg/L</span>
-                    <span class="action-warn">Retest</span>
-                </div>
-                <div class="unit-row">
-                    <span>✅</span>
-                    <span class="unit-id">2B</span>
-                    <span>2.3 ppb</span>
-                    <span>0.18 mg/L</span>
-                    <span class="action-none">None</span>
-                </div>
-                <div class="unit-row">
-                    <span>❌</span>
-                    <span class="unit-id">3A</span>
-                    <span>18.2 ppb</span>
-                    <span>0.44 mg/L</span>
-                    <span class="action-danger">Alert</span>
-                </div>
-            </div>
-
-            <div class="alert-item">
-                <span style="font-size: 1.25rem;">🚨</span>
-                <div>
-                    <strong>Action Required: Unit 3A</strong><br>
-                    Lead (18.2 ppb) exceeds EPA 15 ppb action level. Notify tenant immediately, initiate flush protocol, schedule retest within 30 days.
-                </div>
-            </div>
-
-            <div class="actions">
-                <button class="btn btn-primary">📄 Download Compliance Report</button>
-                <button class="btn btn-secondary">🔔 Notify All Tenants</button>
-            </div>
-        </main>
-
-        <footer class="footer">
-            Data sourced from Troy Water Authority (NY4100050) · Updated 2026-03-15<br>
-            Questions? Text <strong>WATER</strong> to <strong>55512</strong><br><br>
-            <strong>WaterTruth</strong> — Bringing transparency to every tap.
-        </footer>
-
+    <!--
+      EPA ENVIROFACTS LIVE BANNER
+      Fetches system metadata from:
+        https://enviro.epa.gov/envirofacts/water_system/where/PWSID=NY4100050/JSON
+      Falls back gracefully if unavailable.
+      Address-level ppb readings are CCR-sourced (hardcoded) because
+      Consumer Confidence Reports are not available via public API.
+    -->
+    <div id="apiBanner" class="api-banner api-loading">
+      <span class="api-dot"></span>
+      <span id="apiStatusText">Connecting to EPA SDWIS…</span>
     </div>
 
-    <script src="app.js"></script>
+    <!-- Status Header -->
+    <div id="mainHeader" class="header">
+      <h1>💧 WaterTruth</h1>
+      <p class="h-address" id="displayAddress">247 River St</p>
+      <p class="h-city"    id="displayCity">Troy, NY 12180</p>
+    </div>
+
+    <p class="timestamp">
+      📍 Updated: <span id="currentDate"></span> · Troy Water Authority
+    </p>
+
+    <!-- Contaminant Cards (injected by JS) -->
+    <div id="cardsContainer"></div>
+
+    <!-- Filter Advisory — shown only for addresses with specific risks -->
+    <div id="filterAdvisory" class="filter-advisory hidden"></div>
+
+    <!-- Health Guidance -->
+    <div id="actionBox" class="action-box">
+      <strong>Health Guidance:</strong><br>
+      <span id="actionText">Loading…</span>
+    </div>
+
+    <!-- Service Line Tracking -->
+    <div id="serviceLineBox" class="service-info">
+      <h3>🔍 Service Line Status</h3>
+      <p>Status: <span class="service-status" id="lineStatus">—</span></p>
+      <p class="service-desc" id="lineDesc"></p>
+      <a href="#" class="service-link">What to do while you wait →</a>
+    </div>
+
+    <!-- Actions -->
+    <button class="btn btn-primary"   onclick="shareStatus()">📤 Share This Status</button>
+    <button class="btn btn-secondary" onclick="getSMSAlert()">💬 Get SMS Alerts</button>
+
+  </main>
+
+  <!-- ════════════════════════════════════
+       MANAGER PORTAL
+       ════════════════════════════════════ -->
+  <main id="managerView" style="display:none">
+
+    <div class="manager-header">
+      <h2>⚠️ Building Status: Monitor</h2>
+      <p class="sub">247 River St, Troy NY 12180 · Last full test: Jan 14, 2026</p>
+      <p class="flag">Action required in 1 unit</p>
+    </div>
+
+    <div class="unit-table">
+      <div class="unit-row head-row">
+        <span></span><span>Unit</span><span>Lead</span><span>Iron</span><span>Action</span>
+      </div>
+      <div class="unit-row">
+        <span>✅</span><span class="unit-id">1A</span>
+        <span>2.1 ppb</span><span>0.38 mg/L</span><span class="act-none">None</span>
+      </div>
+      <div class="unit-row">
+        <span>✅</span><span class="unit-id">1B</span>
+        <span>1.8 ppb</span><span>0.11 mg/L</span><span class="act-none">None</span>
+      </div>
+      <div class="unit-row">
+        <span>⚠️</span><span class="unit-id">2A</span>
+        <span>9.4 ppb</span><span>0.55 mg/L</span><span class="act-warn">Retest</span>
+      </div>
+      <div class="unit-row">
+        <span>✅</span><span class="unit-id">2B</span>
+        <span>2.3 ppb</span><span>0.18 mg/L</span><span class="act-none">None</span>
+      </div>
+      <div class="unit-row">
+        <span>❌</span><span class="unit-id">3A</span>
+        <span>18.2 ppb</span><span>0.44 mg/L</span><span class="act-danger">Alert</span>
+      </div>
+    </div>
+
+    <div class="alert-box">
+      <span style="font-size:18px">🚨</span>
+      <div>
+        <strong>Action Required: Unit 3A</strong><br>
+        Lead (18.2 ppb) exceeds EPA 15 ppb action level.
+        Notify tenant, initiate flush protocol, schedule retest within 30 days.
+      </div>
+    </div>
+
+    <button class="btn btn-primary">📄 Download Compliance Report</button>
+    <button class="btn btn-secondary">🔔 Notify All Tenants</button>
+
+  </main>
+
+  <!-- ── Footer ────────────────────────── -->
+  <footer class="footer">
+    CCR readings: Troy Water Authority 2023 · Compliance status: EPA Envirofacts (NY4100050)<br>
+    Questions? Text <strong>WATER</strong> to <strong>55512</strong><br><br>
+    <strong>WaterTruth MVP</strong> · BFOR 516 Capstone · March 2026
+  </footer>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   DATA — address-level readings
+   Source: Troy Water Authority Consumer Confidence Report 2023
+   (CCR PDF data; not available through any public REST API)
+   Health guidelines: EPA MCLs + EWG health limits where noted
+═══════════════════════════════════════════════════════════ */
+
+const EMOJI = { safe: '✅', warn: '⚠️', danger: '❌' };
+const LABEL = { safe: 'SAFE', warn: 'ELEVATED', danger: 'DANGER' };
+
+const db = {
+  river: {
+    addr: '247 River St',
+    city: 'Troy, NY 12180',
+    headerClass: '',
+    serviceLineClass: '',
+    serviceLine: 'UNKNOWN',
+    serviceDesc: 'Replacement scheduled Q3 2026. City grant active.',
+    filterAdvisory: null,
+    actionClass: '',
+    action: 'Your water meets all current legal guidelines. No additional filtration required for safety. Service line classification is pending — confirm with the City of Troy.',
+    shareMsg: 'WaterTruth · 247 River St, Troy NY\nLead ✅ 2.1 ppb (safe)\nPFAS ✅ not detected\nService line: UNKNOWN (replacement Q3 2026)',
+    contaminants: [
+      { name: 'Lead', level: '2.1 ppb',  limit: '15 ppb', status: 'safe', verdict: 'Safe for drinking',
+        desc: 'Well below EPA action level. No immediate action required.' },
+      { name: 'PFAS', level: '< 1 ppt',  limit: '4 ppt',  status: 'safe', verdict: 'Not detected',
+        desc: 'No forever chemicals found above detection threshold.' }
+    ]
+  },
+
+  congress: {
+    addr: '123 Congress St',
+    city: 'Troy, NY 12180',
+    headerClass: 'is-warn',
+    serviceLineClass: 'is-danger',
+    serviceLine: 'KNOWN LEAD',
+    serviceDesc: 'Lead service line confirmed. Scheduled for urgent replacement.',
+    filterAdvisory: '⚠️ <strong>Filter warning:</strong> Standard pitcher filters (Brita, PUR) reduce TTHMs but do <strong>not</strong> remove Chromium-6 or radium. Reverse osmosis required for full protection at this address.',
+    actionClass: 'is-warn',
+    action: 'Elevated contaminants detected. Use an NSF/ANSI 53-certified filter for drinking and cooking. Reverse osmosis recommended for Chromium-6 removal.',
+    shareMsg: 'WaterTruth · 123 Congress St, Troy NY\nLead ⚠️ 9.4 ppb (elevated)\nTTHMs ⚠️ 68.2 ppb (legal, but 455× health goal)\nChromium-6 ⚠️ elevated\nService line: KNOWN LEAD',
+    contaminants: [
+      { name: 'Lead',       level: '9.4 ppb',  limit: '15 ppb',          status: 'warn',
+        verdict: 'Elevated · Monitor',
+        desc: 'Approaching EPA action level. Certified lead-reduction filter recommended, especially for infants and children under 6.' },
+      { name: 'TTHMs',      level: '68.2 ppb', limit: '80 ppb',          status: 'warn',
+        verdict: 'Legal — 455× EWG health goal',
+        desc: 'Disinfection byproduct linked to long-term cancer risk. Standard carbon filter significantly reduces this.' },
+      { name: 'Chromium-6', level: '0.12 ppb', limit: 'No federal limit', status: 'warn',
+        verdict: 'No federal limit · 6× health guideline',
+        desc: 'Above EWG health risk threshold. Carbon filters do NOT remove Chromium-6. Reverse osmosis required.' }
+    ]
+  },
+
+  ferry: {
+    addr: '89 Ferry St',
+    city: 'Troy, NY 12180',
+    headerClass: 'is-danger',
+    serviceLineClass: 'is-danger',
+    serviceLine: 'KNOWN LEAD — ACTIVE ALERT',
+    serviceDesc: 'Lead service line confirmed with high concentration. Contact your building manager immediately.',
+    filterAdvisory: '🚨 <strong>Critical:</strong> Standard pitcher filters do <strong>not</strong> reliably remove lead at 18.2 ppb. Use an NSF/ANSI 53-certified filter or reverse osmosis system. Do not use unfiltered tap water for drinking, cooking, or infant formula.',
+    actionClass: 'is-danger',
+    action: 'DO NOT DRINK UNFILTERED. Lead exceeds the EPA action level (15 ppb). Use a certified NSF/ANSI 53 or reverse osmosis filter immediately. Run cold water 2 minutes before use. Contact your building manager today.',
+    shareMsg: 'URGENT — WaterTruth · 89 Ferry St, Troy NY\nLead ❌ 18.2 ppb — ABOVE EPA ACTION LEVEL\nDo not drink unfiltered. Certified filter required immediately.\nContact building manager.',
+    contaminants: [
+      { name: 'Lead',   level: '18.2 ppb', limit: '15 ppb',   status: 'danger',
+        verdict: 'ABOVE ACTION LEVEL',
+        desc: 'Exceeds EPA action level. Likely lead service line. Run cold tap 2 min before use. Do not use for cooking or infant formula.' },
+      { name: 'Copper', level: '1.4 mg/L', limit: '1.3 mg/L', status: 'danger',
+        verdict: 'Elevated — Gastrointestinal Risk',
+        desc: 'Above EPA action level. Can cause nausea and gastrointestinal issues. Contact building manager immediately.' },
+      { name: 'PFAS',   level: '5.2 ppt',  limit: '4 ppt',    status: 'warn',
+        verdict: 'Above EPA Health Limit',
+        desc: 'Exceeds EPA 4 ppt health advisory. Requires specialized filtration or reverse osmosis for reduction.' }
+    ]
+  }
+};
+
+/* ═══════════════════════════════════════════════════════════
+   EPA ENVIROFACTS API
+   Endpoint: /envirofacts/water_system/where/PWSID=NY4100050/JSON
+   Returns: system name, population served, primary source,
+            activity status, EPA region, owner type.
+   Reference: https://www.epa.gov/enviro/envirofacts-data-service-api
+   Falls back silently to "cached data" indicator on any failure.
+═══════════════════════════════════════════════════════════ */
+
+const PWSID    = 'NY4100050';
+const EPA_URL  = `https://enviro.epa.gov/envirofacts/water_system/where/PWSID=${PWSID}/JSON`;
+
+/* Also available (CORS-permitted, no auth required):
+   Violations:   /envirofacts/sdw_contam_viol_city/where/PWSID=${PWSID}/JSON
+   Lead/Copper:  /envirofacts/sdw_lcrr_cu_pb_sample/where/PWSID=${PWSID}/JSON
+   Interactive:  https://echo.epa.gov/tools/web-services/facility-search-drinking-water
+   WQP search:   https://www.waterqualitydata.us/data/ResultSet/search?statecode=US:36&...
+*/
+
+async function fetchWithTimeout(url, ms = 7000) {
+  const ctrl = new AbortController();
+  const id   = setTimeout(() => ctrl.abort(), ms);
+  try {
+    const resp = await fetch(url, { signal: ctrl.signal });
+    clearTimeout(id);
+    return resp;
+  } catch (e) {
+    clearTimeout(id);
+    throw e;
+  }
+}
+
+async function loadEPAData() {
+  const banner = document.getElementById('apiBanner');
+  const text   = document.getElementById('apiStatusText');
+
+  try {
+    const resp = await fetchWithTimeout(EPA_URL);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+
+    const data = await resp.json();
+    const sys  = Array.isArray(data) ? data[0] : null;
+    if (!sys) throw new Error('Empty response');
+
+    const name   = toTitleCase(sys.PWS_NAME || 'Troy Water Authority');
+    const pop    = sys.POPULATION_SERVED_COUNT
+                     ? Number(sys.POPULATION_SERVED_COUNT).toLocaleString()
+                     : '~50,000';
+    const src    = { SW: 'Surface water', GW: 'Groundwater' }[sys.PRIMARY_SOURCE_CODE] || 'Municipal';
+    const status = sys.PWS_ACTIVITY_CODE === 'A' ? 'Active' : (sys.PWS_ACTIVITY_CODE || '');
+
+    banner.className   = 'api-banner api-live';
+    text.innerHTML     = `Live EPA data · ${name} · ${pop} residents · ${src} · ${status}`;
+  } catch (err) {
+    console.warn('EPA Envirofacts unavailable:', err.message);
+    banner.className   = 'api-banner api-cached';
+    text.textContent   = 'Cached data · EPA API unavailable — showing CCR 2023 readings';
+  }
+}
+
+function toTitleCase(str) {
+  return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DASHBOARD RENDER
+═══════════════════════════════════════════════════════════ */
+
+let currentKey = 'river';
+
+function updateDashboard() {
+  currentKey = document.getElementById('addressSelector').value;
+  const d    = db[currentKey];
+
+  // Header
+  document.getElementById('displayAddress').textContent = d.addr;
+  document.getElementById('displayCity').textContent    = d.city;
+  document.getElementById('mainHeader').className       = 'header ' + d.headerClass;
+
+  // Health guidance
+  document.getElementById('actionText').textContent = d.action;
+  document.getElementById('actionBox').className    = 'action-box ' + d.actionClass;
+
+  // Service line
+  document.getElementById('lineStatus').textContent       = d.serviceLine;
+  document.getElementById('lineDesc').textContent         = d.serviceDesc;
+  document.getElementById('serviceLineBox').className     = 'service-info ' + d.serviceLineClass;
+
+  // Filter advisory
+  const fa = document.getElementById('filterAdvisory');
+  if (d.filterAdvisory) {
+    fa.innerHTML = d.filterAdvisory;
+    fa.classList.remove('hidden');
+  } else {
+    fa.classList.add('hidden');
+  }
+
+  // Contaminant cards
+  const container = document.getElementById('cardsContainer');
+  container.innerHTML = '';
+  d.contaminants.forEach((c, i) => {
+    const el = document.createElement('div');
+    el.className = `card status-${c.status}`;
+    el.innerHTML = `
+      <div class="card-title">
+        <span>${EMOJI[c.status]} ${c.name}</span>
+        <span class="card-badge">${LABEL[c.status]}</span>
+      </div>
+      <div class="card-level">Current: ${c.level} · Limit: ${c.limit}</div>
+      <div class="card-verdict">${c.verdict}</div>
+      <div class="card-desc">${c.desc}</div>
+    `;
+    container.appendChild(el);
+  });
+
+  // Tint page background to match worst status
+  const worst = d.contaminants.some(c => c.status === 'danger') ? '#fff1f2'
+              : d.contaminants.some(c => c.status === 'warn')   ? '#fffbeb'
+              : '#f8fafc';
+  document.body.style.background = worst;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   VIEW TOGGLE
+═══════════════════════════════════════════════════════════ */
+
+function switchView(view) {
+  const res  = document.getElementById('residentView');
+  const mgr  = document.getElementById('managerView');
+  const tRes = document.getElementById('tabResident');
+  const tMgr = document.getElementById('tabManager');
+
+  if (view === 'resident') {
+    res.style.display = 'block'; mgr.style.display = 'none';
+    tRes.classList.add('active'); tMgr.classList.remove('active');
+  } else {
+    res.style.display = 'none';  mgr.style.display = 'block';
+    tRes.classList.remove('active'); tMgr.classList.add('active');
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SHARE — Web Share API → clipboard → SMS fallback
+═══════════════════════════════════════════════════════════ */
+
+function shareStatus() {
+  const msg = db[currentKey].shareMsg;
+  if (navigator.share) {
+    navigator.share({ title: 'WaterTruth Status', text: msg }).catch(() => {});
+  } else if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(msg)
+      .then(() => alert('Status copied to clipboard.'))
+      .catch(() => window.open('sms:?body=' + encodeURIComponent(msg)));
+  } else {
+    window.open('sms:?body=' + encodeURIComponent(msg));
+  }
+}
+
+function getSMSAlert() {
+  alert('Text WATER to 55512 to receive SMS water quality alerts for your address.');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════════ */
+
+document.getElementById('currentDate').textContent =
+  new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+updateDashboard();
+loadEPAData();
+</script>
 </body>
 </html>
