@@ -6,7 +6,7 @@
   <title>WaterTruth — Water Safety at Your Address</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     :root {
       --primary:    #1a56db;
@@ -330,7 +330,8 @@
       color: var(--muted);
       margin-bottom: 12px;
     }
-    #qrCanvas { border-radius: 8px; }
+    #qrCanvas { border-radius: 8px; display: inline-block; }
+    #qrCanvas img, #qrCanvas canvas { border-radius: 8px; display: block; }
     .qr-url {
       font-size: 10px;
       color: var(--muted);
@@ -548,7 +549,7 @@
   <div class="qr-box">
     <div class="qr-title">📱 Scan to Open WaterTruth</div>
     <div class="qr-sub">Show judges or residents — opens live prototype</div>
-    <canvas id="qrCanvas"></canvas>
+    <div id="qrCanvas"></div>
     <div class="qr-url" id="qrUrl"></div>
   </div>
 
@@ -892,10 +893,13 @@ updateMap('river');
 (function generateQR() {
   const url = window.location.href.split('?')[0];
   document.getElementById('qrUrl').textContent = url;
-  QRCode.toCanvas(document.getElementById('qrCanvas'), url, {
+  new QRCode(document.getElementById('qrCanvas'), {
+    text: url,
     width: 160,
-    margin: 1,
-    color: { dark: '#1e293b', light: '#ffffff' }
+    height: 160,
+    colorDark: '#1e293b',
+    colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.M
   });
 })();
 </script>
