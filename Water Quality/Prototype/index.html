@@ -107,7 +107,7 @@
     }
     .api-loading { background: #f1f5f9; color: var(--muted); }
     .api-live    { background: #ecfdf5; color: #065f46; }
-    .api-cached  { background: #f8fafc; color: #94a3b8; border: 1px solid var(--border); }
+    .api-cached  { background: #f8fafc; color: #475569; border: 1px solid var(--border); }
 
     .api-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
     .api-loading .api-dot { background: #94a3b8; animation: blink 1.2s ease-in-out infinite; }
@@ -600,7 +600,7 @@
 
 </div>
 
-<script>
+<script type="module">
 /* ═══════════════════════════════════════════════════════════
    DATA — address-level readings
    Source: Troy Water Authority Consumer Confidence Report 2023
@@ -744,16 +744,31 @@ async function loadEPAData() {
 }
 
 function toTitleCase(str) {
-  return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+  return str.toLowerCase().replaceAll(/\b\w/g, c => c.toUpperCase());
 }
 
 /* ═══════════════════════════════════════════════════════════
    DASHBOARD RENDER
 ═══════════════════════════════════════════════════════════ */
 
+globalThis.switchView = (view) => {
+  const res  = document.getElementById('residentView');
+  const mgr  = document.getElementById('managerView');
+  const tRes = document.getElementById('tabResident');
+  const tMgr = document.getElementById('tabManager');
+
+  if (view === 'resident') {
+    res.style.display = 'block'; mgr.style.display = 'none';
+    tRes.classList.add('active'); tMgr.classList.remove('active');
+  } else {
+    res.style.display = 'none';  mgr.style.display = 'block';
+    tRes.classList.remove('active'); tMgr.classList.add('active');
+  }
+};
+
 let currentKey = 'river';
 
-function updateDashboard() {
+globalThis.updateDashboard = () => {
   currentKey = document.getElementById('addressSelector').value;
   const d    = db[currentKey];
 
@@ -799,9 +814,12 @@ function updateDashboard() {
   });
 
   // Tint page background to match worst status
-  const worst = d.contaminants.some(c => c.status === 'danger') ? '#fff1f2'
-              : d.contaminants.some(c => c.status === 'warn')   ? '#fffbeb'
-              : '#f8fafc';
+  let worst = '#f8fafc';
+  if (d.contaminants.some(c => c.status === 'danger')) {
+    worst = '#fff1f2';
+  } else if (d.contaminants.some(c => c.status === 'warn')) {
+    worst = '#fffbeb';
+  }
   document.body.style.background = worst;
 
   // Update map if already initialised
@@ -812,26 +830,13 @@ function updateDashboard() {
    VIEW TOGGLE
 ═══════════════════════════════════════════════════════════ */
 
-function switchView(view) {
-  const res  = document.getElementById('residentView');
-  const mgr  = document.getElementById('managerView');
-  const tRes = document.getElementById('tabResident');
-  const tMgr = document.getElementById('tabManager');
 
-  if (view === 'resident') {
-    res.style.display = 'block'; mgr.style.display = 'none';
-    tRes.classList.add('active'); tMgr.classList.remove('active');
-  } else {
-    res.style.display = 'none';  mgr.style.display = 'block';
-    tRes.classList.remove('active'); tMgr.classList.add('active');
-  }
-}
 
 /* ═══════════════════════════════════════════════════════════
    SHARE — Web Share API → clipboard → SMS fallback
 ═══════════════════════════════════════════════════════════ */
 
-function shareStatus() {
+globalThis.shareStatus = () => {
   const msg = db[currentKey].shareMsg;
   if (navigator.share) {
     navigator.share({ title: 'WaterTruth Status', text: msg }).catch(() => {});
@@ -844,7 +849,7 @@ function shareStatus() {
   }
 }
 
-function getSMSAlert() {
+globalThis.getSMSAlert = () => {
   alert('Text WATER to 55512 to receive SMS water quality alerts for your address.');
 }
 
@@ -855,7 +860,10 @@ function getSMSAlert() {
 let map, mapMarker;
 
 function initMap(lat, lng, label) {
-  if (!map) {
+  if (map) {
+    map.setView([lat, lng], 16);
+    mapMarker.setLatLng([lat, lng]).setPopupContent(label).openPopup();
+  } else {
     map = L.map('addressMap', { zoomControl: true, scrollWheelZoom: false })
             .setView([lat, lng], 16);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -863,17 +871,11 @@ function initMap(lat, lng, label) {
       maxZoom: 19
     }).addTo(map);
     mapMarker = L.marker([lat, lng]).addTo(map).bindPopup(label).openPopup();
-  } else {
-    map.setView([lat, lng], 16);
-    mapMarker.setLatLng([lat, lng]).setPopupContent(label).openPopup();
   }
 }
 
 function updateMap(key) {
   const d = db[key];
-  const statusColor = d.headerClass.includes('danger') ? 'red'
-                    : d.headerClass.includes('warn')   ? 'orange'
-                    : 'green';
   initMap(d.lat, d.lng, `<strong>${d.addr}</strong><br>${d.city}`);
 }
 
@@ -885,12 +887,12 @@ document.getElementById('currentDate').textContent =
   new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
 updateDashboard();
-loadEPAData();
+await loadEPAData();
 updateMap('river');
 
 // QR Code — points to the live prototype URL
 (function generateQR() {
-  const url = window.location.href.split('?')[0];
+  const url = globalThis.location.href.split('?')[0];
   document.getElementById('qrUrl').textContent = url;
   QRCode.toCanvas(document.getElementById('qrCanvas'), url, {
     width: 160,
