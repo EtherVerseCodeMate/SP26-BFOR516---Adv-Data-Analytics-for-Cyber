@@ -890,28 +890,14 @@ updateDashboard();
 await loadEPAData();
 updateMap('river');
 
-// QR Code — points to the live prototype URL
-(function generateQR() {
-  const url = globalThis.location.href.split('?')[0];
-  document.getElementById('qrUrl').textContent = url;
-  QRCode.toCanvas(document.getElementById('qrCanvas'), url, {
-    width: 160,
-    margin: 1,
-    color: { dark: '#1e293b', light: '#ffffff' }
-  });
-})();
-</script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script>
-  new QRCode(document.getElementById('qrcode'), {
-    text: 'https://remarkable-figolla-61d914.netlify.app/',
-    width: 180,
-    height: 180,
-    colorDark: '#1e293b',
-    colorLight: '#ffffff',
-    correctLevel: QRCode.CorrectLevel.M
-  });
+// QR Code — hardcoded to the live Netlify prototype URL
+const qrUrl = 'https://remarkable-figolla-61d914.netlify.app/';
+document.getElementById('qrUrl').textContent = qrUrl;
+await QRCode.toCanvas(document.getElementById('qrCanvas'), qrUrl, {
+  width: 160,
+  margin: 1,
+  color: { dark: '#1e293b', light: '#ffffff' }
+});
 </script>
 </body>
 </html>
