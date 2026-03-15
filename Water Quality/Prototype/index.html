@@ -6,6 +6,7 @@
   <title>WaterTruth — Water Safety at Your Address</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/qrcode@1.5.3/build/qrcode.min.js"></script>
   <style>
     :root {
       --primary:    #1a56db;
@@ -308,6 +309,81 @@
       align-items: flex-start;
     }
 
+    /* ── QR Code ─────────────────────────────── */
+    .qr-box {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+      text-align: center;
+    }
+    .qr-box .qr-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .qr-box .qr-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    #qrCanvas { border-radius: 8px; }
+    .qr-url {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 8px;
+      word-break: break-all;
+    }
+
+    /* ── B2B2C Diagram ────────────────────────── */
+    .diagram-box {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+    }
+    .diagram-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 14px;
+    }
+    .flow {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .flow-step {
+      flex: 1;
+      min-width: 72px;
+      background: #f1f5f9;
+      border-radius: 8px;
+      padding: 10px 6px;
+      text-align: center;
+      font-size: 10px;
+      line-height: 1.4;
+    }
+    .flow-step .flow-icon { font-size: 18px; display: block; margin-bottom: 4px; }
+    .flow-step .flow-label { font-weight: 700; color: var(--text); display: block; }
+    .flow-step .flow-src   { color: var(--muted); font-size: 9px; display: block; margin-top: 2px; }
+    .flow-step.highlight   { background: #eff6ff; border: 1.5px solid #bfdbfe; }
+    .flow-arrow {
+      flex-shrink: 0;
+      width: 18px;
+      text-align: center;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
     /* ── Map ─────────────────────────────────── */
     .map-box {
       background: white;
@@ -412,7 +488,7 @@
     </div>
 
     <!-- Actions -->
-    <button class="btn btn-primary"   onclick="shareStatus()">📤 Share This Status</button>
+    <button class="btn btn-primary"   onclick="shareStatus()">📤 Share with Landlord</button>
     <button class="btn btn-secondary" onclick="getSMSAlert()">💬 Get SMS Alerts</button>
 
   </main>
@@ -467,6 +543,53 @@
     <button class="btn btn-secondary">🔔 Notify All Tenants</button>
 
   </main>
+
+  <!-- ── QR Code ──────────────────────── -->
+  <div class="qr-box">
+    <div class="qr-title">📱 Scan to Open WaterTruth</div>
+    <div class="qr-sub">Show judges or residents — opens live prototype</div>
+    <canvas id="qrCanvas"></canvas>
+    <div class="qr-url" id="qrUrl"></div>
+  </div>
+
+  <!-- ── B2B2C Data Flow Diagram ───────── -->
+  <div class="diagram-box">
+    <div class="diagram-title">How WaterTruth Works — Data Flow</div>
+    <div class="flow">
+      <div class="flow-step">
+        <span class="flow-icon">🏙️</span>
+        <span class="flow-label">City Data</span>
+        <span class="flow-src">LCR Reports<br>CCR PDFs</span>
+      </div>
+      <div class="flow-arrow">›</div>
+      <div class="flow-step">
+        <span class="flow-icon">🔬</span>
+        <span class="flow-label">EPA / EWG</span>
+        <span class="flow-src">SDWIS API<br>Health limits</span>
+      </div>
+      <div class="flow-arrow">›</div>
+      <div class="flow-step highlight">
+        <span class="flow-icon">💧</span>
+        <span class="flow-label">WaterTruth</span>
+        <span class="flow-src">Translation<br>layer</span>
+      </div>
+      <div class="flow-arrow">›</div>
+      <div class="flow-step">
+        <span class="flow-icon">🏠</span>
+        <span class="flow-label">Landlord</span>
+        <span class="flow-src">Manager<br>Portal</span>
+      </div>
+      <div class="flow-arrow">›</div>
+      <div class="flow-step">
+        <span class="flow-icon">👤</span>
+        <span class="flow-label">Resident</span>
+        <span class="flow-src">Plain-language<br>safety card</span>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#94a3b8;margin-top:12px;text-align:center;">
+      BlueConduit maps unknown service lines · Troy Water Authority CCR 2023 · EPA Envirofacts NY4100050
+    </p>
+  </div>
 
   <!-- ── Footer ────────────────────────── -->
   <footer class="footer">
@@ -764,6 +887,17 @@ document.getElementById('currentDate').textContent =
 updateDashboard();
 loadEPAData();
 updateMap('river');
+
+// QR Code — points to the live prototype URL
+(function generateQR() {
+  const url = window.location.href.split('?')[0];
+  document.getElementById('qrUrl').textContent = url;
+  QRCode.toCanvas(document.getElementById('qrCanvas'), url, {
+    width: 160,
+    margin: 1,
+    color: { dark: '#1e293b', light: '#ffffff' }
+  });
+})();
 </script>
 </body>
 </html>
