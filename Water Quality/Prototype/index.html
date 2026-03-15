@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WaterTruth — Real-Time Safety</title>
+    <title>WaterTruth — Water Safety at Your Address</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="app-container">
-        
+
         <div class="view-toggle">
             <button class="view-btn active" id="btn-resident" onclick="switchView('resident')">Resident View</button>
             <button class="view-btn" id="btn-manager" onclick="switchView('manager')">Manager Portal</button>
@@ -24,7 +24,7 @@
 
         <section class="address-selector">
             <select id="address-search" onchange="handleAddressChange()">
-                <option value="247 River St">247 River St (Main Demo)</option>
+                <option value="247 River St">247 River St (Safe Baseline)</option>
                 <option value="123 Congress St">123 Congress St (Historical Lead)</option>
                 <option value="89 Ferry St">89 Ferry St (Active Alert)</option>
             </select>
@@ -32,36 +32,38 @@
 
         <!-- Resident View -->
         <main id="resident-view" class="resident-view active">
-            <p class="timestamp" style="font-size: 0.75rem; color: #64748b; margin-bottom: 1rem;">
+            <p class="timestamp">
                 📍 Last updated: 2 hours ago · Troy Water Authority data
             </p>
 
             <div id="status-container">
-                <!-- Cards will be injected here -->
+                <!-- Cards injected by app.js -->
             </div>
 
             <div class="service-info" id="service-info">
-                <h3>🔍 Service Line Tracking</h3>
+                <h3>🔍 Service Line Status</h3>
                 <p class="service-status-line">Status: <span id="line-status">UNKNOWN</span></p>
-                <p style="font-size: 0.8125rem; color: #64748b; margin-top: 0.25rem;" id="line-desc">
+                <p class="service-desc" id="line-desc">
                     Replacement scheduled for Q3 2026. City grant active.
                 </p>
+                <a href="#" class="service-link">What to do while you wait →</a>
             </div>
 
             <div class="actions">
-                <button class="btn btn-primary">📤 Share Status with Landlord</button>
+                <button class="btn btn-primary">📤 Share This Status with Landlord</button>
                 <button class="btn btn-secondary">📞 Contact Water Dept</button>
             </div>
         </main>
 
         <!-- Manager View -->
         <main id="manager-view" class="manager-view">
-            <div class="status-card warn" style="border-left-width: 4px; margin-bottom: 1.5rem;">
+            <div class="status-card warn" style="margin-bottom: 1.5rem;">
                 <div class="card-header">
-                    <span class="contaminant-name">Building Status</span>
-                    <span class="status-badge">Monitor</span>
+                    <span class="contaminant-name">⚠️ Building Status: Monitor</span>
+                    <span class="status-badge">ELEVATED</span>
                 </div>
-                <div class="verdict">Action required in 1 unit</div>
+                <div class="verdict" style="color: #d97706;">Action required in 1 unit</div>
+                <div class="level-info" style="margin-top: 0.5rem;">Last full test: Jan 14, 2026 · 247 River St, Troy NY 12180</div>
             </div>
 
             <div class="unit-list">
@@ -69,31 +71,43 @@
                     <span></span>
                     <span>Unit</span>
                     <span>Lead</span>
-                    <span>Status</span>
+                    <span>Iron</span>
+                    <span>Action</span>
                 </div>
                 <div class="unit-row">
                     <span>✅</span>
                     <span class="unit-id">1A</span>
                     <span>2.1 ppb</span>
-                    <span>Clear</span>
+                    <span>0.38 mg/L</span>
+                    <span class="action-none">None</span>
                 </div>
                 <div class="unit-row">
                     <span>✅</span>
                     <span class="unit-id">1B</span>
                     <span>1.8 ppb</span>
-                    <span>Clear</span>
+                    <span>0.11 mg/L</span>
+                    <span class="action-none">None</span>
                 </div>
                 <div class="unit-row">
                     <span>⚠️</span>
                     <span class="unit-id">2A</span>
                     <span>9.4 ppb</span>
-                    <span>Elevated</span>
+                    <span>0.55 mg/L</span>
+                    <span class="action-warn">Retest</span>
+                </div>
+                <div class="unit-row">
+                    <span>✅</span>
+                    <span class="unit-id">2B</span>
+                    <span>2.3 ppb</span>
+                    <span>0.18 mg/L</span>
+                    <span class="action-none">None</span>
                 </div>
                 <div class="unit-row">
                     <span>❌</span>
                     <span class="unit-id">3A</span>
                     <span>18.2 ppb</span>
-                    <span>Danger</span>
+                    <span>0.44 mg/L</span>
+                    <span class="action-danger">Alert</span>
                 </div>
             </div>
 
@@ -101,7 +115,7 @@
                 <span style="font-size: 1.25rem;">🚨</span>
                 <div>
                     <strong>Action Required: Unit 3A</strong><br>
-                    Lead level (18.2 ppb) exceeds EPA action level. Resident has been notified. Schedule flush protocol.
+                    Lead (18.2 ppb) exceeds EPA 15 ppb action level. Notify tenant immediately, initiate flush protocol, schedule retest within 30 days.
                 </div>
             </div>
 
@@ -112,7 +126,8 @@
         </main>
 
         <footer class="footer">
-            Data sourced from Troy Water Authority (NY410005) · Updated 2026-03-15<br>
+            Data sourced from Troy Water Authority (NY4100050) · Updated 2026-03-15<br>
+            Questions? Text <strong>WATER</strong> to <strong>55512</strong><br><br>
             <strong>WaterTruth</strong> — Bringing transparency to every tap.
         </footer>
 
