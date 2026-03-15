@@ -6,7 +6,7 @@
   <title>AquaSure — Real-Time Last-Mile Water Intelligence</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/qrcode@1.5.3/build/qrcode.min.js"></script>
+
   <style>
     :root {
       --primary:    #1a56db;
@@ -617,7 +617,7 @@
   <footer class="footer">
     CCR readings: Troy Water Authority 2023 · Compliance status: EPA Envirofacts (NY4100050)<br>
     Questions? Text <strong>WATER</strong> to <strong>55512</strong><br><br>
-    <strong>WaterTruth MVP</strong> · BFOR 516 Capstone · March 2026
+    <strong>AquaSure</strong> — Real-Time Last-Mile Water Intelligence · BFOR 516 Capstone · March 2026
   </footer>
 
 </div>
@@ -645,7 +645,7 @@ const db = {
     filterAdvisory: null,
     actionClass: '',
     action: 'Your water meets all current legal guidelines. No additional filtration required for safety. Service line classification is pending — confirm with the City of Troy.',
-    shareMsg: 'WaterTruth · 247 River St, Troy NY\nLead ✅ 2.1 ppb (safe)\nPFAS ✅ not detected\nService line: UNKNOWN (replacement Q3 2026)',
+    shareMsg: 'AquaSure · 247 River St, Troy NY\nLead ✅ 2.1 ppb (safe)\nPFAS ✅ not detected\nService line: UNKNOWN (replacement Q3 2026)',
     contaminants: [
       { name: 'Lead', level: '2.1 ppb',  limit: '15 ppb', status: 'safe', verdict: 'Safe for drinking',
         desc: 'Well below EPA action level. No immediate action required.' },
@@ -665,7 +665,7 @@ const db = {
     filterAdvisory: '⚠️ <strong>Filter warning:</strong> Standard pitcher filters (Brita, PUR) reduce TTHMs but do <strong>not</strong> remove Chromium-6 or radium. Reverse osmosis required for full protection at this address.',
     actionClass: 'is-warn',
     action: 'Elevated contaminants detected. Use an NSF/ANSI 53-certified filter for drinking and cooking. Reverse osmosis recommended for Chromium-6 removal.',
-    shareMsg: 'WaterTruth · 123 Congress St, Troy NY\nLead ⚠️ 9.4 ppb (elevated)\nTTHMs ⚠️ 68.2 ppb (legal, but 455× health goal)\nChromium-6 ⚠️ elevated\nService line: KNOWN LEAD',
+    shareMsg: 'AquaSure · 123 Congress St, Troy NY\nLead ⚠️ 9.4 ppb (elevated)\nTTHMs ⚠️ 68.2 ppb (legal, but 455× health goal)\nChromium-6 ⚠️ elevated\nService line: KNOWN LEAD',
     contaminants: [
       { name: 'Lead',       level: '9.4 ppb',  limit: '15 ppb',          status: 'warn',
         verdict: 'Elevated · Monitor',
@@ -690,7 +690,7 @@ const db = {
     filterAdvisory: '🚨 <strong>Critical:</strong> Standard pitcher filters do <strong>not</strong> reliably remove lead at 18.2 ppb. Use an NSF/ANSI 53-certified filter or reverse osmosis system. Do not use unfiltered tap water for drinking, cooking, or infant formula.',
     actionClass: 'is-danger',
     action: 'DO NOT DRINK UNFILTERED. Lead exceeds the EPA action level (15 ppb). Use a certified NSF/ANSI 53 or reverse osmosis filter immediately. Run cold water 2 minutes before use. Contact your building manager today.',
-    shareMsg: 'URGENT — WaterTruth · 89 Ferry St, Troy NY\nLead ❌ 18.2 ppb — ABOVE EPA ACTION LEVEL\nDo not drink unfiltered. Certified filter required immediately.\nContact building manager.',
+    shareMsg: 'URGENT — AquaSure · 89 Ferry St, Troy NY\nLead ❌ 18.2 ppb — ABOVE EPA ACTION LEVEL\nDo not drink unfiltered. Certified filter required immediately.\nContact building manager.',
     contaminants: [
       { name: 'Lead',   level: '18.2 ppb', limit: '15 ppb',   status: 'danger',
         verdict: 'ABOVE ACTION LEVEL',
@@ -912,14 +912,7 @@ updateDashboard();
 await loadEPAData();
 updateMap('river');
 
-// QR Code — hardcoded to the live Netlify prototype URL
-const qrUrl = 'https://remarkable-figolla-61d914.netlify.app/';
-document.getElementById('qrUrl').textContent = qrUrl;
-await QRCode.toCanvas(document.getElementById('qrCanvas'), qrUrl, {
-  width: 160,
-  margin: 1,
-  color: { dark: '#1e293b', light: '#ffffff' }
-});
+// QR Code — rendered as <img> via qrserver.com API (no JS library needed)
 </script>
 </body>
 </html>
