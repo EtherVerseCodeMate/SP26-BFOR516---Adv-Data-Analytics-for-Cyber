@@ -891,15 +891,13 @@ await loadEPAData();
 updateMap('river');
 
 // QR Code — hardcoded to the live Netlify prototype URL
-(function generateQR() {
-  const url = 'https://remarkable-figolla-61d914.netlify.app/';
-  document.getElementById('qrUrl').textContent = url;
-  QRCode.toCanvas(document.getElementById('qrCanvas'), url, {
-    width: 160,
-    margin: 1,
-    color: { dark: '#1e293b', light: '#ffffff' }
-  });
-})();
+const qrUrl = 'https://remarkable-figolla-61d914.netlify.app/';
+document.getElementById('qrUrl').textContent = qrUrl;
+await QRCode.toCanvas(document.getElementById('qrCanvas'), qrUrl, {
+  width: 160,
+  margin: 1,
+  color: { dark: '#1e293b', light: '#ffffff' }
+});
 </script>
 </body>
 </html>
