@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WaterTruth — Water Safety at Your Address</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/qrcode@1.5.3/build/qrcode.min.js"></script>
   <style>
     :root {
       --primary:    #1a56db;
@@ -104,7 +107,7 @@
     }
     .api-loading { background: #f1f5f9; color: var(--muted); }
     .api-live    { background: #ecfdf5; color: #065f46; }
-    .api-cached  { background: #f8fafc; color: #94a3b8; border: 1px solid var(--border); }
+    .api-cached  { background: #f8fafc; color: #475569; border: 1px solid var(--border); }
 
     .api-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
     .api-loading .api-dot { background: #94a3b8; animation: blink 1.2s ease-in-out infinite; }
@@ -306,6 +309,100 @@
       align-items: flex-start;
     }
 
+    /* ── QR Code ─────────────────────────────── */
+    .qr-box {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+      text-align: center;
+    }
+    .qr-box .qr-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .qr-box .qr-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    #qrCanvas { border-radius: 8px; }
+    .qr-url {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 8px;
+      word-break: break-all;
+    }
+
+    /* ── B2B2C Diagram ────────────────────────── */
+    .diagram-box {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+    }
+    .diagram-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 14px;
+    }
+    .flow {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .flow-step {
+      flex: 1;
+      min-width: 72px;
+      background: #f1f5f9;
+      border-radius: 8px;
+      padding: 10px 6px;
+      text-align: center;
+      font-size: 10px;
+      line-height: 1.4;
+    }
+    .flow-step .flow-icon { font-size: 18px; display: block; margin-bottom: 4px; }
+    .flow-step .flow-label { font-weight: 700; color: var(--text); display: block; }
+    .flow-step .flow-src   { color: var(--muted); font-size: 9px; display: block; margin-top: 2px; }
+    .flow-step.highlight   { background: #eff6ff; border: 1.5px solid #bfdbfe; }
+    .flow-arrow {
+      flex-shrink: 0;
+      width: 18px;
+      text-align: center;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    /* ── Map ─────────────────────────────────── */
+    .map-box {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+    }
+    .map-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 10px 14px 6px;
+    }
+    #addressMap { height: 200px; width: 100%; }
+
     /* ── Footer ──────────────────────────────── */
     .footer {
       text-align: center;
@@ -384,8 +481,14 @@
       <a href="#" class="service-link">What to do while you wait →</a>
     </div>
 
+    <!-- Address Map -->
+    <div class="map-box">
+      <div class="map-label">📍 Address Location</div>
+      <div id="addressMap"></div>
+    </div>
+
     <!-- Actions -->
-    <button class="btn btn-primary"   onclick="shareStatus()">📤 Share This Status</button>
+    <button class="btn btn-primary"   onclick="shareStatus()">📤 Share with Landlord</button>
     <button class="btn btn-secondary" onclick="getSMSAlert()">💬 Get SMS Alerts</button>
 
   </main>
@@ -441,19 +544,51 @@
 
   </main>
 
-  <!-- ── QR Code Card ─────────────────── -->
-  <div class="container">
-    <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:24px;text-align:center;margin-top:16px;">
-      <div style="font-size:20px;font-weight:700;margin-bottom:4px;">📱 Scan to Open WaterTruth</div>
-      <div style="color:var(--muted);font-size:13px;margin-bottom:16px;">Show judges or residents — opens live prototype</div>
-      <div id="qrcode" style="display:inline-block;"></div>
-      <div style="margin-top:12px;">
-        <a href="https://remarkable-figolla-61d914.netlify.app/" target="_blank"
-           style="color:var(--primary);font-size:13px;word-break:break-all;">
-          https://remarkable-figolla-61d914.netlify.app/
-        </a>
+  <!-- ── QR Code ──────────────────────── -->
+  <div class="qr-box">
+    <div class="qr-title">📱 Scan to Open WaterTruth</div>
+    <div class="qr-sub">Show judges or residents — opens live prototype</div>
+    <canvas id="qrCanvas"></canvas>
+    <div class="qr-url" id="qrUrl"></div>
+  </div>
+
+  <!-- ── B2B2C Data Flow Diagram ───────── -->
+  <div class="diagram-box">
+    <div class="diagram-title">How WaterTruth Works — Data Flow</div>
+    <div class="flow">
+      <div class="flow-step">
+        <span class="flow-icon">🏙️</span>
+        <span class="flow-label">City Data</span>
+        <span class="flow-src">LCR Reports<br>CCR PDFs</span>
+      </div>
+      <div class="flow-arrow">›</div>
+      <div class="flow-step">
+        <span class="flow-icon">🔬</span>
+        <span class="flow-label">EPA / EWG</span>
+        <span class="flow-src">SDWIS API<br>Health limits</span>
+      </div>
+      <div class="flow-arrow">›</div>
+      <div class="flow-step highlight">
+        <span class="flow-icon">💧</span>
+        <span class="flow-label">WaterTruth</span>
+        <span class="flow-src">Translation<br>layer</span>
+      </div>
+      <div class="flow-arrow">›</div>
+      <div class="flow-step">
+        <span class="flow-icon">🏠</span>
+        <span class="flow-label">Landlord</span>
+        <span class="flow-src">Manager<br>Portal</span>
+      </div>
+      <div class="flow-arrow">›</div>
+      <div class="flow-step">
+        <span class="flow-icon">👤</span>
+        <span class="flow-label">Resident</span>
+        <span class="flow-src">Plain-language<br>safety card</span>
       </div>
     </div>
+    <p style="font-size:11px;color:#94a3b8;margin-top:12px;text-align:center;">
+      BlueConduit maps unknown service lines · Troy Water Authority CCR 2023 · EPA Envirofacts NY4100050
+    </p>
   </div>
 
   <!-- ── Footer ────────────────────────── -->
@@ -465,7 +600,7 @@
 
 </div>
 
-<script>
+<script type="module">
 /* ═══════════════════════════════════════════════════════════
    DATA — address-level readings
    Source: Troy Water Authority Consumer Confidence Report 2023
@@ -480,6 +615,7 @@ const db = {
   river: {
     addr: '247 River St',
     city: 'Troy, NY 12180',
+    lat: 42.7321, lng: -73.6905,
     headerClass: '',
     serviceLineClass: '',
     serviceLine: 'UNKNOWN',
@@ -499,6 +635,7 @@ const db = {
   congress: {
     addr: '123 Congress St',
     city: 'Troy, NY 12180',
+    lat: 42.7262, lng: -73.6893,
     headerClass: 'is-warn',
     serviceLineClass: 'is-danger',
     serviceLine: 'KNOWN LEAD',
@@ -523,6 +660,7 @@ const db = {
   ferry: {
     addr: '89 Ferry St',
     city: 'Troy, NY 12180',
+    lat: 42.7364, lng: -73.6877,
     headerClass: 'is-danger',
     serviceLineClass: 'is-danger',
     serviceLine: 'KNOWN LEAD — ACTIVE ALERT',
@@ -606,16 +744,31 @@ async function loadEPAData() {
 }
 
 function toTitleCase(str) {
-  return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+  return str.toLowerCase().replaceAll(/\b\w/g, c => c.toUpperCase());
 }
 
 /* ═══════════════════════════════════════════════════════════
    DASHBOARD RENDER
 ═══════════════════════════════════════════════════════════ */
 
+globalThis.switchView = (view) => {
+  const res  = document.getElementById('residentView');
+  const mgr  = document.getElementById('managerView');
+  const tRes = document.getElementById('tabResident');
+  const tMgr = document.getElementById('tabManager');
+
+  if (view === 'resident') {
+    res.style.display = 'block'; mgr.style.display = 'none';
+    tRes.classList.add('active'); tMgr.classList.remove('active');
+  } else {
+    res.style.display = 'none';  mgr.style.display = 'block';
+    tRes.classList.remove('active'); tMgr.classList.add('active');
+  }
+};
+
 let currentKey = 'river';
 
-function updateDashboard() {
+globalThis.updateDashboard = () => {
   currentKey = document.getElementById('addressSelector').value;
   const d    = db[currentKey];
 
@@ -661,36 +814,29 @@ function updateDashboard() {
   });
 
   // Tint page background to match worst status
-  const worst = d.contaminants.some(c => c.status === 'danger') ? '#fff1f2'
-              : d.contaminants.some(c => c.status === 'warn')   ? '#fffbeb'
-              : '#f8fafc';
+  let worst = '#f8fafc';
+  if (d.contaminants.some(c => c.status === 'danger')) {
+    worst = '#fff1f2';
+  } else if (d.contaminants.some(c => c.status === 'warn')) {
+    worst = '#fffbeb';
+  }
   document.body.style.background = worst;
+
+  // Update map if already initialised
+  if (map) updateMap(currentKey);
 }
 
 /* ═══════════════════════════════════════════════════════════
    VIEW TOGGLE
 ═══════════════════════════════════════════════════════════ */
 
-function switchView(view) {
-  const res  = document.getElementById('residentView');
-  const mgr  = document.getElementById('managerView');
-  const tRes = document.getElementById('tabResident');
-  const tMgr = document.getElementById('tabManager');
 
-  if (view === 'resident') {
-    res.style.display = 'block'; mgr.style.display = 'none';
-    tRes.classList.add('active'); tMgr.classList.remove('active');
-  } else {
-    res.style.display = 'none';  mgr.style.display = 'block';
-    tRes.classList.remove('active'); tMgr.classList.add('active');
-  }
-}
 
 /* ═══════════════════════════════════════════════════════════
    SHARE — Web Share API → clipboard → SMS fallback
 ═══════════════════════════════════════════════════════════ */
 
-function shareStatus() {
+globalThis.shareStatus = () => {
   const msg = db[currentKey].shareMsg;
   if (navigator.share) {
     navigator.share({ title: 'WaterTruth Status', text: msg }).catch(() => {});
@@ -703,8 +849,34 @@ function shareStatus() {
   }
 }
 
-function getSMSAlert() {
+globalThis.getSMSAlert = () => {
   alert('Text WATER to 55512 to receive SMS water quality alerts for your address.');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MAP — Leaflet + OpenStreetMap
+═══════════════════════════════════════════════════════════ */
+
+let map, mapMarker;
+
+function initMap(lat, lng, label) {
+  if (map) {
+    map.setView([lat, lng], 16);
+    mapMarker.setLatLng([lat, lng]).setPopupContent(label).openPopup();
+  } else {
+    map = L.map('addressMap', { zoomControl: true, scrollWheelZoom: false })
+            .setView([lat, lng], 16);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      maxZoom: 19
+    }).addTo(map);
+    mapMarker = L.marker([lat, lng]).addTo(map).bindPopup(label).openPopup();
+  }
+}
+
+function updateMap(key) {
+  const d = db[key];
+  initMap(d.lat, d.lng, `<strong>${d.addr}</strong><br>${d.city}`);
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -715,7 +887,19 @@ document.getElementById('currentDate').textContent =
   new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
 updateDashboard();
-loadEPAData();
+await loadEPAData();
+updateMap('river');
+
+// QR Code — points to the live prototype URL
+(function generateQR() {
+  const url = globalThis.location.href.split('?')[0];
+  document.getElementById('qrUrl').textContent = url;
+  QRCode.toCanvas(document.getElementById('qrCanvas'), url, {
+    width: 160,
+    margin: 1,
+    color: { dark: '#1e293b', light: '#ffffff' }
+  });
+})();
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
