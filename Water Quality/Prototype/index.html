@@ -441,6 +441,21 @@
 
   </main>
 
+  <!-- ── QR Code Card ─────────────────── -->
+  <div class="container">
+    <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:24px;text-align:center;margin-top:16px;">
+      <div style="font-size:20px;font-weight:700;margin-bottom:4px;">📱 Scan to Open WaterTruth</div>
+      <div style="color:var(--muted);font-size:13px;margin-bottom:16px;">Show judges or residents — opens live prototype</div>
+      <div id="qrcode" style="display:inline-block;"></div>
+      <div style="margin-top:12px;">
+        <a href="https://remarkable-figolla-61d914.netlify.app/" target="_blank"
+           style="color:var(--primary);font-size:13px;word-break:break-all;">
+          https://remarkable-figolla-61d914.netlify.app/
+        </a>
+      </div>
+    </div>
+  </div>
+
   <!-- ── Footer ────────────────────────── -->
   <footer class="footer">
     CCR readings: Troy Water Authority 2023 · Compliance status: EPA Envirofacts (NY4100050)<br>
@@ -701,6 +716,18 @@ document.getElementById('currentDate').textContent =
 
 updateDashboard();
 loadEPAData();
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+  new QRCode(document.getElementById('qrcode'), {
+    text: 'https://remarkable-figolla-61d914.netlify.app/',
+    width: 180,
+    height: 180,
+    colorDark: '#1e293b',
+    colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.M
+  });
 </script>
 </body>
 </html>
