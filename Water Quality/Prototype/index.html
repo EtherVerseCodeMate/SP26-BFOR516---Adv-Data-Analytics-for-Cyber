@@ -558,42 +558,58 @@
     </div>
   </div>
 
-  <!-- ── B2B2C Data Flow Diagram ───────── -->
+  <!-- ── AquaSure Architecture Diagram ─── -->
   <div class="diagram-box">
-    <div class="diagram-title">How WaterTruth Works — Data Flow</div>
-    <div class="flow">
+    <div class="diagram-title">AquaSure — Last-Mile Intelligence Architecture</div>
+
+    <!-- Row 1: Data pipeline -->
+    <div class="flow" style="margin-bottom:12px;">
       <div class="flow-step">
-        <span class="flow-icon">🏙️</span>
-        <span class="flow-label">City Data</span>
-        <span class="flow-src">LCR Reports<br>CCR PDFs</span>
+        <span class="flow-icon">🔩</span>
+        <span class="flow-label">The Node</span>
+        <span class="flow-src">Smart Meter<br>Edge Detection</span>
       </div>
       <div class="flow-arrow">›</div>
       <div class="flow-step">
-        <span class="flow-icon">🔬</span>
-        <span class="flow-label">EPA / EWG</span>
-        <span class="flow-src">SDWIS API<br>Health limits</span>
+        <span class="flow-icon">📡</span>
+        <span class="flow-label">The Network</span>
+        <span class="flow-src">AMI / WiFi<br>Cellular</span>
       </div>
       <div class="flow-arrow">›</div>
       <div class="flow-step highlight">
-        <span class="flow-icon">💧</span>
-        <span class="flow-label">WaterTruth</span>
-        <span class="flow-src">Translation<br>layer</span>
+        <span class="flow-icon">🧠</span>
+        <span class="flow-label">The Brain</span>
+        <span class="flow-src">Cloud ML<br>Risk & Anomaly</span>
       </div>
       <div class="flow-arrow">›</div>
       <div class="flow-step">
-        <span class="flow-icon">🏠</span>
-        <span class="flow-label">Landlord</span>
-        <span class="flow-src">Manager<br>Portal</span>
+        <span class="flow-icon">🏙️</span>
+        <span class="flow-label">Utility</span>
+        <span class="flow-src">Command<br>Center</span>
       </div>
       <div class="flow-arrow">›</div>
       <div class="flow-step">
-        <span class="flow-icon">👤</span>
+        <span class="flow-icon">📱</span>
         <span class="flow-label">Resident</span>
-        <span class="flow-src">Plain-language<br>safety card</span>
+        <span class="flow-src">Plain-language<br>safety status</span>
       </div>
     </div>
-    <p style="font-size:11px;color:#94a3b8;margin-top:12px;text-align:center;">
-      BlueConduit maps unknown service lines · Troy Water Authority CCR 2023 · EPA Envirofacts NY4100050
+
+    <!-- Row 2: Edge sensors -->
+    <div style="background:#f1f5f9;border-radius:8px;padding:10px 12px;font-size:11px;color:#475569;line-height:1.7;">
+      <strong style="color:#1e293b;font-size:11px;">Edge Sensors at the Meter (ESP32 Node):</strong><br>
+      🌊 <strong>Turbidity</strong> — pipe corrosion &amp; physical contamination &nbsp;|&nbsp;
+      ⚡ <strong>Conductivity</strong> — dissolved metals (Pb, Cu) &nbsp;|&nbsp;
+      🧪 <strong>pH</strong> — chemical imbalance &nbsp;|&nbsp;
+      💚 <strong>Residual Chlorine</strong> — disinfection effectiveness &nbsp;|&nbsp;
+      🌡️ <strong>Temperature</strong> — Legionella growth risk
+    </div>
+
+    <p style="font-size:11px;color:#94a3b8;margin-top:10px;text-align:center;">
+      "Utilities test centrally. Citizens consume locally. In between lies a void of real-time intelligence." — AquaSure
+    </p>
+    <p style="font-size:10px;color:#cbd5e1;margin-top:4px;text-align:center;">
+      CCR data: Troy Water Authority 2023 · EWG NY4100050 · EPA Envirofacts · BlueConduit LSL mapping
     </p>
   </div>
 
