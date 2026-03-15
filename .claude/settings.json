@@ -4,7 +4,8 @@
       "Bash(find \"c:/Users/intel/OneDrive - University at Albany - SUNY/Documents/MSDF/Spring 2026/SP26 BFOR516 - Adv Data Analytics for Cyber/Week\"* -maxdepth 1 -type f \\\\\\( -name \"*.ipynb\" -o -name \"*.py\" \\\\\\))",
       "Read(//c/Users/intel//**)",
       "Read(//c/Users/intel/**)",
-      "Bash(ls -lah \"c:\\\\Users\\\\intel\\\\OneDrive - University at Albany - SUNY\\\\Documents\\\\MSDF\\\\Spring 2026\\\\SP26 BFOR516 - Adv Data Analytics for Cyber\\\\Week 7\"\" 2>/dev/null || ls -la \"/c/Users/intel/OneDrive - University at Albany - SUNY/Documents/MSDF/Spring 2026/SP26 BFOR516 - Adv Data Analytics for Cyber/Week 7/\" 2>/dev/null || find \"/c/Users/intel/OneDrive - University at Albany - SUNY/Documents/MSDF/Spring 2026/SP26 BFOR516 - Adv Data Analytics for Cyber/Week 7 \" -type f)"
+      "Bash(ls -lah \"c:\\\\Users\\\\intel\\\\OneDrive - University at Albany - SUNY\\\\Documents\\\\MSDF\\\\Spring 2026\\\\SP26 BFOR516 - Adv Data Analytics for Cyber\\\\Week 7\"\" 2>/dev/null || ls -la \"/c/Users/intel/OneDrive - University at Albany - SUNY/Documents/MSDF/Spring 2026/SP26 BFOR516 - Adv Data Analytics for Cyber/Week 7/\" 2>/dev/null || find \"/c/Users/intel/OneDrive - University at Albany - SUNY/Documents/MSDF/Spring 2026/SP26 BFOR516 - Adv Data Analytics for Cyber/Week 7 \" -type f)",
+      "WebFetch(domain:www.ewg.org)"
     ]
   }
 }

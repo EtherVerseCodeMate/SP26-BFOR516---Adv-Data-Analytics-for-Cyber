@@ -206,28 +206,45 @@ Two views:
 
   <p class="timestamp">📍 Last updated: 2 hours ago · Troy Water Authority data</p>
 
-  <div class="card safe">
-    <div class="card-title">✅ Lead</div>
-    <div class="card-level">2.1 ppb · EPA action level: 15 ppb</div>
-    <div class="card-verdict">Safe for drinking and cooking</div>
+  <!-- REAL TROY DATA — EWG source NY4100050, 2021-2023 averages -->
+
+  <div class="card danger">
+    <div class="card-title">❌ Lead</div>
+    <div class="card-level">35.4 ppb at 90th percentile · EPA action level: 15 ppb</div>
+    <div class="card-verdict">Above action level · Do not use unfiltered for drinking or cooking</div>
+    <div style="font-size:11px;color:#6b7280;margin-top:6px;">Pipes serving your address are classified: UNKNOWN — replacement scheduled 2026</div>
   </div>
 
   <div class="card warn">
-    <div class="card-title">⚠️ Iron</div>
-    <div class="card-level">0.38 mg/L · EPA secondary standard: 0.30 mg/L</div>
-    <div class="card-verdict">Safe to drink · May cause taste and staining</div>
+    <div class="card-title">⚠️ Trihalomethanes (TTHMs)</div>
+    <div class="card-level">68.2 ppb · Legal limit: 80 ppb ✅ · Health guideline: 0.15 ppb</div>
+    <div class="card-verdict">Passes legal standard · 455× over cancer risk guideline</div>
+    <div style="font-size:11px;color:#6b7280;margin-top:6px;">Disinfection byproduct · Linked to cancer risk · Standard carbon filter reduces this</div>
   </div>
 
-  <div class="card safe">
-    <div class="card-title">✅ PFAS</div>
-    <div class="card-level">&lt; 1 ppt · Below detection threshold</div>
-    <div class="card-verdict">Not detected · Safe for drinking</div>
+  <div class="card warn">
+    <div class="card-title">⚠️ Haloacetic Acids (HAA5)</div>
+    <div class="card-level">34.1 ppb · Legal limit: 60 ppb ✅ · Health guideline: 0.1 ppb</div>
+    <div class="card-verdict">Passes legal standard · 341× over cancer risk guideline</div>
+    <div style="font-size:11px;color:#6b7280;margin-top:6px;">Disinfection byproduct · Standard carbon filter reduces this</div>
+  </div>
+
+  <div class="card warn">
+    <div class="card-title">⚠️ Chromium-6</div>
+    <div class="card-level">0.118 ppb · No legal limit · Health guideline: 0.02 ppb</div>
+    <div class="card-verdict">No legal limit · 5.9× over cancer risk guideline · Not removed by carbon filters</div>
+    <div style="font-size:11px;color:#6b7280;margin-top:6px;">Requires reverse osmosis to remove</div>
+  </div>
+
+  <div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:12px;padding:14px;margin-bottom:12px;font-size:13px;">
+    <strong>⚠️ Note on your filter:</strong><br>
+    Standard pitcher filters (Brita, PUR) reduce TTHMs and HAAs but do <strong>not</strong> remove chromium-6 or radium. Reverse osmosis removes all 10 contaminants above guidelines.
   </div>
 
   <div class="service-line">
     ⚠️ <strong>Service line status: UNKNOWN</strong><br>
-    Replacement scheduled Q3 2026. Troy Water Authority will notify you when work begins on your block.<br>
-    <a href="#" style="color:#92400e;">Learn what this means for your family →</a>
+    City of Troy replacement grant active. Your street has not yet been scheduled.<br>
+    <a href="#" style="color:#92400e;">What to do while you wait →</a>
   </div>
 
   <button class="share-btn">📤 Share this status with your landlord</button>
