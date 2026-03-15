@@ -232,6 +232,46 @@
     .service-link       { display: inline-block; font-size: 12px; color: var(--primary); font-weight: 600; margin-top: 6px; text-decoration: none; }
     .service-link:hover { text-decoration: underline; }
 
+    /* ── Citywide Progress Bar ───────────────── */
+    .progress-wrap { margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(0,0,0,0.06); }
+    .progress-header {
+      display: flex; justify-content: space-between;
+      font-size: 11px; color: var(--muted); margin-bottom: 4px; font-weight: 600;
+    }
+    .progress-bar  { height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--safe); border-radius: 3px; width: 40.6%; }
+    .progress-note { font-size: 11px; color: var(--muted); margin-top: 5px; line-height: 1.5; }
+
+    /* ── City Program Cards ──────────────────── */
+    .programs-section  { margin-bottom: 16px; }
+    .programs-label    {
+      font-size: 11px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+    .program-card {
+      background: white;
+      border-radius: 10px;
+      padding: 13px 14px;
+      margin-bottom: 8px;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--primary);
+    }
+    .program-card.urg-warn   { border-left-color: var(--warn); }
+    .program-card.urg-danger { border-left-color: var(--danger); }
+    .program-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .program-card p  { font-size: 12px; color: var(--muted); margin-bottom: 8px; line-height: 1.55; }
+    .program-ctas    { display: flex; gap: 6px; flex-wrap: wrap; }
+    .program-cta {
+      font-size: 12px; font-weight: 600; color: var(--primary);
+      padding: 5px 11px; background: #eff6ff;
+      border-radius: 6px; text-decoration: none;
+      border: 1px solid #bfdbfe; white-space: nowrap;
+    }
+    .program-cta:hover { background: #dbeafe; }
+    .program-cta.cta-phone { background: var(--safe-bg); color: #065f46; border-color: #a7f3d0; }
+    .program-cta.cta-phone:hover { background: #d1fae5; }
+
     /* ── Buttons ─────────────────────────────── */
     .btn {
       display: block;
@@ -381,8 +421,27 @@
       <h3>🔍 Service Line Status</h3>
       <p>Status: <span class="service-status" id="lineStatus">—</span></p>
       <p class="service-desc" id="lineDesc"></p>
-      <a href="#" class="service-link">What to do while you wait →</a>
+      <a id="serviceLink" href="https://www.troyny.gov/1342/Lead-Drinking-Water"
+         class="service-link" target="_blank" rel="noopener">
+        Learn what to do → troyny.gov
+      </a>
+      <!-- Citywide replacement progress — sourced from City of Troy press releases -->
+      <div class="progress-wrap">
+        <div class="progress-header">
+          <span>Citywide lead pipe replacement</span>
+          <span>550+ / 1,354 pipes</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill"></div></div>
+        <p class="progress-note">
+          $29.5M in state &amp; federal grants · 4 crews active ·
+          <a href="https://www.troyny.gov/1508/Lead-Service-Line-Replacement-Program"
+             target="_blank" rel="noopener" style="color:var(--primary);">Replacement program →</a>
+        </p>
+      </div>
     </div>
+
+    <!-- City Programs (injected by JS, contextual to service line status) -->
+    <div id="programsSection" class="programs-section"></div>
 
     <!-- Actions -->
     <button class="btn btn-primary"   onclick="shareStatus()">📤 Share This Status</button>
@@ -468,16 +527,53 @@ const db = {
     headerClass: '',
     serviceLineClass: '',
     serviceLine: 'UNKNOWN',
-    serviceDesc: 'Replacement scheduled Q3 2026. City grant active.',
+    serviceDesc: 'Pipe material not yet confirmed by the city. Request a free inspection or check the interactive map below.',
+    /* Link to Troy's ArcGIS address-lookup map (color-coded: green=non-lead, red=lead, gray=unknown) */
+    serviceLink: { label: 'Check your line on the city map → troyny.gov', href: 'https://www.troyny.gov/1502/Check-Your-Address' },
     filterAdvisory: null,
     actionClass: '',
-    action: 'Your water meets all current legal guidelines. No additional filtration required for safety. Service line classification is pending — confirm with the City of Troy.',
-    shareMsg: 'WaterTruth · 247 River St, Troy NY\nLead ✅ 2.1 ppb (safe)\nPFAS ✅ not detected\nService line: UNKNOWN (replacement Q3 2026)',
+    action: 'Your water meets all current legal guidelines. No additional filtration required for safety. Service line material is unconfirmed — use the city map or call DPU to find out.',
+    shareMsg: 'WaterTruth · 247 River St, Troy NY\nLead ✅ 2.1 ppb (safe)\nPFAS ✅ not detected\nService line: UNKNOWN — check troyny.gov/1502',
     contaminants: [
-      { name: 'Lead', level: '2.1 ppb',  limit: '15 ppb', status: 'safe', verdict: 'Safe for drinking',
+      { name: 'Lead', level: '2.1 ppb', limit: '15 ppb', status: 'safe', verdict: 'Safe for drinking',
         desc: 'Well below EPA action level. No immediate action required.' },
-      { name: 'PFAS', level: '< 1 ppt',  limit: '4 ppt',  status: 'safe', verdict: 'Not detected',
+      { name: 'PFAS', level: '< 1 ppt', limit: '4 ppt',  status: 'safe', verdict: 'Not detected',
         desc: 'No forever chemicals found above detection threshold.' }
+    ],
+    /*
+     * City programs — sourced from troyny.gov/1342 (Lead & Drinking Water)
+     * All free. No income requirement. Contact: Troy DPU (518) 237-0343
+     */
+    programs: [
+      {
+        urgency: '',
+        icon: '🗺️',
+        title: 'Check Your Line on the City Map — Free',
+        desc: 'Troy\'s interactive ArcGIS map shows your service line\'s material status (green = likely non-lead, red = suspected lead, gray = unknown). Your address is currently gray.',
+        ctas: [
+          { label: 'Open address map', href: 'https://www.troyny.gov/1502/Check-Your-Address', cls: '' },
+          { label: 'Submit line info', href: 'https://www.troyny.gov/lead', cls: '' }
+        ]
+      },
+      {
+        urgency: '',
+        icon: '🔍',
+        title: 'Free Pipe Identification & Inspection',
+        desc: 'A city technician will visit at no charge to confirm your pipe material using hydro-excavation. If lead is found, you\'re automatically added to the replacement queue.',
+        ctas: [
+          { label: '📞 (518) 237-0343', href: 'tel:+15182370343', cls: 'cta-phone' },
+          { label: 'Email maps@troyny.gov', href: 'mailto:maps@troyny.gov', cls: '' }
+        ]
+      },
+      {
+        urgency: '',
+        icon: '🧪',
+        title: 'Free Lead Water Test',
+        desc: 'Limited free water tests are available through the Troy Water Laboratory. Results help confirm your exposure level.',
+        ctas: [
+          { label: '📞 (518) 237-0343', href: 'tel:+15182370343', cls: 'cta-phone' }
+        ]
+      }
     ]
   },
 
@@ -487,21 +583,52 @@ const db = {
     headerClass: 'is-warn',
     serviceLineClass: 'is-danger',
     serviceLine: 'KNOWN LEAD',
-    serviceDesc: 'Lead service line confirmed. Scheduled for urgent replacement.',
+    serviceDesc: 'Lead service line confirmed. You qualify for free replacement and a free Brita filter today.',
+    serviceLink: { label: 'Join the free replacement list → troyny.gov', href: 'https://www.troyny.gov/1508/Lead-Service-Line-Replacement-Program' },
     filterAdvisory: '⚠️ <strong>Filter warning:</strong> Standard pitcher filters (Brita, PUR) reduce TTHMs but do <strong>not</strong> remove Chromium-6 or radium. Reverse osmosis required for full protection at this address.',
     actionClass: 'is-warn',
-    action: 'Elevated contaminants detected. Use an NSF/ANSI 53-certified filter for drinking and cooking. Reverse osmosis recommended for Chromium-6 removal.',
-    shareMsg: 'WaterTruth · 123 Congress St, Troy NY\nLead ⚠️ 9.4 ppb (elevated)\nTTHMs ⚠️ 68.2 ppb (legal, but 455× health goal)\nChromium-6 ⚠️ elevated\nService line: KNOWN LEAD',
+    action: 'Elevated contaminants detected. Use an NSF/ANSI 53-certified filter for drinking and cooking. Reverse osmosis recommended for Chromium-6 removal. Call (518) 237-0343 to claim your free Brita filter.',
+    shareMsg: 'WaterTruth · 123 Congress St, Troy NY\nLead ⚠️ 9.4 ppb (elevated)\nTTHMs ⚠️ 68.2 ppb (legal, but 455× health goal)\nChromium-6 ⚠️ elevated\nService line: KNOWN LEAD — free replacement available at troyny.gov/1508',
     contaminants: [
-      { name: 'Lead',       level: '9.4 ppb',  limit: '15 ppb',          status: 'warn',
+      { name: 'Lead',       level: '9.4 ppb',  limit: '15 ppb',           status: 'warn',
         verdict: 'Elevated · Monitor',
         desc: 'Approaching EPA action level. Certified lead-reduction filter recommended, especially for infants and children under 6.' },
-      { name: 'TTHMs',      level: '68.2 ppb', limit: '80 ppb',          status: 'warn',
+      { name: 'TTHMs',      level: '68.2 ppb', limit: '80 ppb',           status: 'warn',
         verdict: 'Legal — 455× EWG health goal',
         desc: 'Disinfection byproduct linked to long-term cancer risk. Standard carbon filter significantly reduces this.' },
       { name: 'Chromium-6', level: '0.12 ppb', limit: 'No federal limit', status: 'warn',
         verdict: 'No federal limit · 6× health guideline',
         desc: 'Above EWG health risk threshold. Carbon filters do NOT remove Chromium-6. Reverse osmosis required.' }
+    ],
+    programs: [
+      {
+        urgency: 'urg-warn',
+        icon: '🫗',
+        title: 'Free Brita Filter — Available Now',
+        desc: 'Residents with a confirmed lead service line receive a free certified Brita pitcher filter from the City of Troy. Call DPU to arrange pickup.',
+        ctas: [
+          { label: '📞 (518) 237-0343', href: 'tel:+15182370343', cls: 'cta-phone' }
+        ]
+      },
+      {
+        urgency: '',
+        icon: '🔧',
+        title: 'Free Lead Pipe Replacement',
+        desc: 'Your full service line — both city-owned and private portions — will be replaced at no cost. Covered by $29.5M in state & federal grants. Call to confirm your place in the queue.',
+        ctas: [
+          { label: 'Replacement program', href: 'https://www.troyny.gov/1508/Lead-Service-Line-Replacement-Program', cls: '' },
+          { label: '📞 (518) 237-0343', href: 'tel:+15182370343', cls: 'cta-phone' }
+        ]
+      },
+      {
+        urgency: '',
+        icon: '👶',
+        title: 'Free Lead Risk Assessment (Children Under 6)',
+        desc: 'Rensselaer County Health Dept offers free in-home risk assessments for families with young children. Deanna Miller, (518) 270-2640 · 1600 7th Ave, 2nd Fl, Troy.',
+        ctas: [
+          { label: '📞 (518) 270-2640', href: 'tel:+15182702640', cls: 'cta-phone' }
+        ]
+      }
     ]
   },
 
@@ -511,11 +638,12 @@ const db = {
     headerClass: 'is-danger',
     serviceLineClass: 'is-danger',
     serviceLine: 'KNOWN LEAD — ACTIVE ALERT',
-    serviceDesc: 'Lead service line confirmed with high concentration. Contact your building manager immediately.',
+    serviceDesc: 'Lead service line confirmed with high concentration. Free replacement and free filter available immediately.',
+    serviceLink: { label: 'Request urgent replacement review → troyny.gov', href: 'https://www.troyny.gov/1508/Lead-Service-Line-Replacement-Program' },
     filterAdvisory: '🚨 <strong>Critical:</strong> Standard pitcher filters do <strong>not</strong> reliably remove lead at 18.2 ppb. Use an NSF/ANSI 53-certified filter or reverse osmosis system. Do not use unfiltered tap water for drinking, cooking, or infant formula.',
     actionClass: 'is-danger',
-    action: 'DO NOT DRINK UNFILTERED. Lead exceeds the EPA action level (15 ppb). Use a certified NSF/ANSI 53 or reverse osmosis filter immediately. Run cold water 2 minutes before use. Contact your building manager today.',
-    shareMsg: 'URGENT — WaterTruth · 89 Ferry St, Troy NY\nLead ❌ 18.2 ppb — ABOVE EPA ACTION LEVEL\nDo not drink unfiltered. Certified filter required immediately.\nContact building manager.',
+    action: 'DO NOT DRINK UNFILTERED. Lead exceeds the EPA action level (15 ppb). Use a certified NSF/ANSI 53 or reverse osmosis filter immediately. Run cold water 2 minutes before use. Call (518) 237-0343 to claim your free filter today.',
+    shareMsg: 'URGENT — WaterTruth · 89 Ferry St, Troy NY\nLead ❌ 18.2 ppb — ABOVE EPA ACTION LEVEL\nDo not drink unfiltered. Free certified filter: call (518) 237-0343\nFree pipe replacement: troyny.gov/1508',
     contaminants: [
       { name: 'Lead',   level: '18.2 ppb', limit: '15 ppb',   status: 'danger',
         verdict: 'ABOVE ACTION LEVEL',
@@ -526,6 +654,46 @@ const db = {
       { name: 'PFAS',   level: '5.2 ppt',  limit: '4 ppt',    status: 'warn',
         verdict: 'Above EPA Health Limit',
         desc: 'Exceeds EPA 4 ppt health advisory. Requires specialized filtration or reverse osmosis for reduction.' }
+    ],
+    programs: [
+      {
+        urgency: 'urg-danger',
+        icon: '🚨',
+        title: 'Free Brita Filter — Claim Immediately',
+        desc: 'Lead service line confirmed. Call DPU now to receive your free certified filter. Do not wait for a mailed notice.',
+        ctas: [
+          { label: '📞 (518) 237-0343', href: 'tel:+15182370343', cls: 'cta-phone' }
+        ]
+      },
+      {
+        urgency: 'urg-danger',
+        icon: '🔧',
+        title: 'Free Lead Pipe Replacement — Request Urgent Review',
+        desc: 'At 18.2 ppb you may qualify for expedited replacement. Call and specifically reference your lead level. Full replacement at no cost — city + private portions covered.',
+        ctas: [
+          { label: 'Replacement program', href: 'https://www.troyny.gov/1508/Lead-Service-Line-Replacement-Program', cls: '' },
+          { label: '📞 (518) 237-0343', href: 'tel:+15182370343', cls: 'cta-phone' }
+        ]
+      },
+      {
+        urgency: '',
+        icon: '👶',
+        title: 'Free Lead Risk Assessment (Children Under 6)',
+        desc: 'If children under 6 live in your home, call the Rensselaer County Health Dept for a free in-home lead risk assessment. Deanna Miller, (518) 270-2640.',
+        ctas: [
+          { label: '📞 (518) 270-2640', href: 'tel:+15182702640', cls: 'cta-phone' }
+        ]
+      },
+      {
+        urgency: '',
+        icon: '🏥',
+        title: 'Lead Screening for Children',
+        desc: 'Rensselaer County Childhood Lead Poisoning Prevention Program offers free blood lead level testing for children. Contact: (518) 270-2640.',
+        ctas: [
+          { label: 'CLPPP program', href: 'https://www.rensco.com/255/Childhood-Lead-Poisoning-Prevention-Prog', cls: '' },
+          { label: '📞 (518) 270-2640', href: 'tel:+15182702640', cls: 'cta-phone' }
+        ]
+      }
     ]
   }
 };
@@ -614,9 +782,14 @@ function updateDashboard() {
   document.getElementById('actionBox').className    = 'action-box ' + d.actionClass;
 
   // Service line
-  document.getElementById('lineStatus').textContent       = d.serviceLine;
-  document.getElementById('lineDesc').textContent         = d.serviceDesc;
-  document.getElementById('serviceLineBox').className     = 'service-info ' + d.serviceLineClass;
+  document.getElementById('lineStatus').textContent   = d.serviceLine;
+  document.getElementById('lineDesc').textContent     = d.serviceDesc;
+  document.getElementById('serviceLineBox').className = 'service-info ' + d.serviceLineClass;
+
+  // Service link — points to troy address checker (UNKNOWN) or replacement program (KNOWN LEAD)
+  const sl = document.getElementById('serviceLink');
+  sl.textContent = d.serviceLink.label;
+  sl.href        = d.serviceLink.href;
 
   // Filter advisory
   const fa = document.getElementById('filterAdvisory');
@@ -625,6 +798,30 @@ function updateDashboard() {
     fa.classList.remove('hidden');
   } else {
     fa.classList.add('hidden');
+  }
+
+  // City programs
+  const ps = document.getElementById('programsSection');
+  ps.innerHTML = '';
+  if (d.programs && d.programs.length) {
+    const heading = document.createElement('p');
+    heading.className = 'programs-label';
+    heading.textContent = '🏛️ Free City Programs — Available to You';
+    ps.appendChild(heading);
+
+    d.programs.forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'program-card ' + (p.urgency || '');
+      const ctaHTML = p.ctas.map(c =>
+        `<a href="${c.href}" class="program-cta ${c.cls || ''}" target="_blank" rel="noopener">${c.label}</a>`
+      ).join('');
+      card.innerHTML = `
+        <h4>${p.icon} ${p.title}</h4>
+        <p>${p.desc}</p>
+        <div class="program-ctas">${ctaHTML}</div>
+      `;
+      ps.appendChild(card);
+    });
   }
 
   // Contaminant cards
