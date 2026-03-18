@@ -1,0 +1,184 @@
+Collecting ipykernel
+  Using cached ipykernel-7.2.0-py3-none-any.whl.metadata (4.5 kB)
+Collecting comm>=0.1.1 (from ipykernel)
+  Using cached comm-0.2.3-py3-none-any.whl.metadata (3.7 kB)
+Collecting debugpy>=1.6.5 (from ipykernel)
+  Using cached debugpy-1.8.20-cp313-cp313-win_amd64.whl.metadata (1.5 kB)
+Collecting ipython>=7.23.1 (from ipykernel)
+  Using cached ipython-9.11.0-py3-none-any.whl.metadata (4.5 kB)
+Collecting jupyter-client>=8.8.0 (from ipykernel)
+  Using cached jupyter_client-8.8.0-py3-none-any.whl.metadata (8.4 kB)
+Collecting jupyter-core!=6.0.*,>=5.1 (from ipykernel)
+  Using cached jupyter_core-5.9.1-py3-none-any.whl.metadata (1.5 kB)
+Collecting matplotlib-inline>=0.1 (from ipykernel)
+  Using cached matplotlib_inline-0.2.1-py3-none-any.whl.metadata (2.3 kB)
+Collecting nest-asyncio>=1.4 (from ipykernel)
+  Using cached nest_asyncio-1.6.0-py3-none-any.whl.metadata (2.8 kB)
+Collecting packaging>=22 (from ipykernel)
+  Using cached packaging-26.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting psutil>=5.7 (from ipykernel)
+  Using cached psutil-7.2.2-cp37-abi3-win_amd64.whl.metadata (22 kB)
+Collecting pyzmq>=25 (from ipykernel)
+  Using cached pyzmq-27.1.0-cp312-abi3-win_amd64.whl.metadata (6.0 kB)
+Collecting tornado>=6.4.1 (from ipykernel)
+  Using cached tornado-6.5.5-cp39-abi3-win_amd64.whl.metadata (2.9 kB)
+Collecting traitlets>=5.4.0 (from ipykernel)
+  Using cached traitlets-5.14.3-py3-none-any.whl.metadata (10 kB)
+Collecting colorama>=0.4.4 (from ipython>=7.23.1->ipykernel)
+  Using cached colorama-0.4.6-py2.py3-none-any.whl.metadata (17 kB)
+Collecting decorator>=5.1.0 (from ipython>=7.23.1->ipykernel)
+  Using cached decorator-5.2.1-py3-none-any.whl.metadata (3.9 kB)
+Collecting ipython-pygments-lexers>=1.0.0 (from ipython>=7.23.1->ipykernel)
+  Using cached ipython_pygments_lexers-1.1.1-py3-none-any.whl.metadata (1.1 kB)
+Collecting jedi>=0.18.2 (from ipython>=7.23.1->ipykernel)
+  Using cached jedi-0.19.2-py2.py3-none-any.whl.metadata (22 kB)
+Collecting prompt_toolkit<3.1.0,>=3.0.41 (from ipython>=7.23.1->ipykernel)
+  Using cached prompt_toolkit-3.0.52-py3-none-any.whl.metadata (6.4 kB)
+Collecting pygments>=2.14.0 (from ipython>=7.23.1->ipykernel)
+  Using cached pygments-2.19.2-py3-none-any.whl.metadata (2.5 kB)
+Collecting stack_data>=0.6.0 (from ipython>=7.23.1->ipykernel)
+  Using cached stack_data-0.6.3-py3-none-any.whl.metadata (18 kB)
+Collecting wcwidth (from prompt_toolkit<3.1.0,>=3.0.41->ipython>=7.23.1->ipykernel)
+  Using cached wcwidth-0.6.0-py3-none-any.whl.metadata (30 kB)
+Collecting parso<0.9.0,>=0.8.4 (from jedi>=0.18.2->ipython>=7.23.1->ipykernel)
+  Using cached parso-0.8.6-py2.py3-none-any.whl.metadata (8.4 kB)
+Collecting python-dateutil>=2.8.2 (from jupyter-client>=8.8.0->ipykernel)
+  Using cached python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+Collecting platformdirs>=2.5 (from jupyter-core!=6.0.*,>=5.1->ipykernel)
+  Using cached platformdirs-4.9.4-py3-none-any.whl.metadata (4.7 kB)
+Collecting six>=1.5 (from python-dateutil>=2.8.2->jupyter-client>=8.8.0->ipykernel)
+  Using cached six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+Collecting executing>=1.2.0 (from stack_data>=0.6.0->ipython>=7.23.1->ipykernel)
+  Using cached executing-2.2.1-py2.py3-none-any.whl.metadata (8.9 kB)
+Collecting asttokens>=2.1.0 (from stack_data>=0.6.0->ipython>=7.23.1->ipykernel)
+  Using cached asttokens-3.0.1-py3-none-any.whl.metadata (4.9 kB)
+Collecting pure-eval (from stack_data>=0.6.0->ipython>=7.23.1->ipykernel)
+  Using cached pure_eval-0.2.3-py3-none-any.whl.metadata (6.3 kB)
+Using cached ipykernel-7.2.0-py3-none-any.whl (118 kB)
+Using cached comm-0.2.3-py3-none-any.whl (7.3 kB)
+Using cached debugpy-1.8.20-cp313-cp313-win_amd64.whl (5.4 MB)
+Using cached ipython-9.11.0-py3-none-any.whl (624 kB)
+Using cached prompt_toolkit-3.0.52-py3-none-any.whl (391 kB)
+Using cached colorama-0.4.6-py2.py3-none-any.whl (25 kB)
+Using cached decorator-5.2.1-py3-none-any.whl (9.2 kB)
+Using cached ipython_pygments_lexers-1.1.1-py3-none-any.whl (8.1 kB)
+Using cached jedi-0.19.2-py2.py3-none-any.whl (1.6 MB)
+Using cached parso-0.8.6-py2.py3-none-any.whl (106 kB)
+Using cached jupyter_client-8.8.0-py3-none-any.whl (107 kB)
+Using cached jupyter_core-5.9.1-py3-none-any.whl (29 kB)
+Using cached matplotlib_inline-0.2.1-py3-none-any.whl (9.5 kB)
+Using cached nest_asyncio-1.6.0-py3-none-any.whl (5.2 kB)
+Using cached packaging-26.0-py3-none-any.whl (74 kB)
+Using cached platformdirs-4.9.4-py3-none-any.whl (21 kB)
+Using cached psutil-7.2.2-cp37-abi3-win_amd64.whl (137 kB)
+Using cached pygments-2.19.2-py3-none-any.whl (1.2 MB)
+Using cached python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+Using cached pyzmq-27.1.0-cp312-abi3-win_amd64.whl (619 kB)
+Using cached six-1.17.0-py2.py3-none-any.whl (11 kB)
+Using cached stack_data-0.6.3-py3-none-any.whl (24 kB)
+Using cached asttokens-3.0.1-py3-none-any.whl (27 kB)
+Using cached executing-2.2.1-py2.py3-none-any.whl (28 kB)
+Using cached tornado-6.5.5-cp39-abi3-win_amd64.whl (448 kB)
+Using cached traitlets-5.14.3-py3-none-any.whl (85 kB)
+Using cached pure_eval-0.2.3-py3-none-any.whl (11 kB)
+Using cached wcwidth-0.6.0-py3-none-any.whl (94 kB)
+Installing collected packages: pure-eval, wcwidth, traitlets, tornado, six, pyzmq, pygments, psutil, platformdirs, parso, packaging, nest-asyncio, executing, decorator, debugpy, comm, colorama, asttokens, stack_data, python-dateutil, prompt_toolkit, matplotlib-inline, jupyter-core, jedi, ipython-pygments-lexers, jupyter-client, ipython, ipykernel
+  Attempting uninstall: pure-eval
+    Found existing installation: pure_eval 0.2.3
+    Uninstalling pure_eval-0.2.3:
+      Successfully uninstalled pure_eval-0.2.3
+  Attempting uninstall: wcwidth
+    Found existing installation: wcwidth 0.6.0
+    Uninstalling wcwidth-0.6.0:
+      Successfully uninstalled wcwidth-0.6.0
+  Attempting uninstall: traitlets
+    Found existing installation: traitlets 5.14.3
+    Uninstalling traitlets-5.14.3:
+      Successfully uninstalled traitlets-5.14.3
+  Attempting uninstall: tornado
+    Found existing installation: tornado 6.5.5
+    Uninstalling tornado-6.5.5:
+      Successfully uninstalled tornado-6.5.5
+  Attempting uninstall: six
+    Found existing installation: six 1.17.0
+    Uninstalling six-1.17.0:
+      Successfully uninstalled six-1.17.0
+  Attempting uninstall: pyzmq
+    Found existing installation: pyzmq 27.1.0
+    Uninstalling pyzmq-27.1.0:
+      Successfully uninstalled pyzmq-27.1.0
+  Attempting uninstall: pygments
+    Found existing installation: Pygments 2.19.2
+    Uninstalling Pygments-2.19.2:
+      Successfully uninstalled Pygments-2.19.2
+  Attempting uninstall: psutil
+    Found existing installation: psutil 7.2.2
+    Uninstalling psutil-7.2.2:
+      Successfully uninstalled psutil-7.2.2
+  Attempting uninstall: platformdirs
+    Found existing installation: platformdirs 4.9.4
+    Uninstalling platformdirs-4.9.4:
+      Successfully uninstalled platformdirs-4.9.4
+  Attempting uninstall: parso
+    Found existing installation: parso 0.8.6
+    Uninstalling parso-0.8.6:
+      Successfully uninstalled parso-0.8.6
+  Attempting uninstall: packaging
+    Found existing installation: packaging 26.0
+    Uninstalling packaging-26.0:
+      Successfully uninstalled packaging-26.0
+  Attempting uninstall: nest-asyncio
+    Found existing installation: nest-asyncio 1.6.0
+    Uninstalling nest-asyncio-1.6.0:
+      Successfully uninstalled nest-asyncio-1.6.0
+  Attempting uninstall: executing
+    Found existing installation: executing 2.2.1
+    Uninstalling executing-2.2.1:
+      Successfully uninstalled executing-2.2.1
+  Attempting uninstall: decorator
+    Found existing installation: decorator 5.2.1
+    Uninstalling decorator-5.2.1:
+      Successfully uninstalled decorator-5.2.1
+  Attempting uninstall: debugpy
+    Found existing installation: debugpy 1.8.20
+    Uninstalling debugpy-1.8.20:
+      Successfully uninstalled debugpy-1.8.20
+  Attempting uninstall: comm
+    Found existing installation: comm 0.2.3
+    Uninstalling comm-0.2.3:
+      Successfully uninstalled comm-0.2.3
+  Attempting uninstall: colorama
+    Found existing installation: colorama 0.4.6
+    Uninstalling colorama-0.4.6:
+      Successfully uninstalled colorama-0.4.6
+  Attempting uninstall: asttokens
+    Found existing installation: asttokens 3.0.1
+    Uninstalling asttokens-3.0.1:
+      Successfully uninstalled asttokens-3.0.1
+  Attempting uninstall: stack_data
+    Found existing installation: stack-data 0.6.3
+    Uninstalling stack-data-0.6.3:
+      Successfully uninstalled stack-data-0.6.3
+  Attempting uninstall: python-dateutil
+    Found existing installation: python-dateutil 2.9.0.post0
+    Uninstalling python-dateutil-2.9.0.post0:
+      Successfully uninstalled python-dateutil-2.9.0.post0
+  Attempting uninstall: prompt_toolkit
+    Found existing installation: prompt_toolkit 3.0.52
+    Uninstalling prompt_toolkit-3.0.52:
+      Successfully uninstalled prompt_toolkit-3.0.52
+  Attempting uninstall: matplotlib-inline
+    Found existing installation: matplotlib-inline 0.2.1
+    Uninstalling matplotlib-inline-0.2.1:
+      Successfully uninstalled matplotlib-inline-0.2.1
+  Attempting uninstall: jupyter-core
+    Found existing installation: jupyter_core 5.9.1
+    Uninstalling jupyter_core-5.9.1:
+      Successfully uninstalled jupyter_core-5.9.1
+ERROR: Could not install packages due to an OSError: [Errno 2] No such file or directory: 'C:\\Users\\intel\\OneDrive - University at Albany - SUNY\\Documents\\MSDF\\Spring 2026\\SP26 BFOR516 - Adv Data Analytics for Cyber\\Week 2\\.venv\\Lib\\site-packages\\jedi\\third_party\\django-stubs\\django-stubs\\contrib\\contenttypes\\management\\commands\\remove_stale_contenttypes.pyi'
+HINT: This error might have occurred since this system does not have Windows Long Path support enabled. You can find information on how to enable this at https://pip.pypa.io/warnings/enable-long-paths
+
+
+
+[notice] A new release of pip is available: 26.0 -> 26.0.1
+[notice] To update, run: C:\Users\intel\OneDrive - University at Albany - SUNY\Documents\MSDF\Spring 2026\SP26 BFOR516 - Adv Data Analytics for Cyber\Week 2\.venv\Scripts\python.exe -m pip install --upgrade pip
