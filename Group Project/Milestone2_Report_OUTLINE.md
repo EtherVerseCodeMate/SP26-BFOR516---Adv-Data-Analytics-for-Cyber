@@ -1,84 +1,108 @@
 BFOR 516 – Group Project Milestone 2: Progress Report
-Title: Predicting Credit Card Defaults using Machine Learning Techniques Team Members: [Souhimbou Kone, Muhammad H Bahar, [Name 3], [Name 4]] Date: March 2026
+Title: Predicting Credit Card Defaults using Machine Learning Techniques
+Team Members: Souhimbou Kone, Muhammad H Bahar, Name 3, Name 4
+Date: March 2026
 
-⚠️ ACADEMIC INTEGRITY NOTE Sections marked [YOUR WRITING] must be written entirely in your own words. The factual data below (numbers, tables, code snippets) comes from running the notebook. Any analysis, interpretation, or conclusion paragraphs written by AI will be penalized.
 
 1. Detailed Description
+
 1a. Project Objective (and any evolution from Milestone 1)
-[YOUR WRITING] — Our core goal is to predict whether a Taiwan credit card client will default on their payment next month. This objective remained consistent with Milestone 1, where we initially focused on building and comparing Logistic Regression (LR) and Gaussian Naive Bayes (GNB) models. However, we expanded our approach by incorporating a Decision Tree Classifier (DT) model. This addition was driven by the requirement to evaluate three distinct models for robust comparison, and, crucially, the DT offered built-in feature importance (Gini impurity) which LR and GNB lacked in a comparable way. We also explored Principal Component Analysis (PCA) as a supplementary technique to understand the data's dimensionality and potential relationships between features.
+
+This task is same as that of Milestone 1. Using the Decision Tree Classifier (DT) algorithm, we are required to train the model that can predict the probability of default or non-payment by the Taiwan credit card clients next month. Out of the three models compared in this task, we chose to implement the Decision Tree Classifier. Upon examining the feature importance of the Decision Tree Classifier, we found that it uses Gini impurity to calculate the feature importance which is not available for the Logistic Regression and the Gaussian Naive Bayes algorithms in the same way. The understanding of the dimensionality of the data and the relationships within the features is also required for modeling. Therefore, we used the Principal Component Analysis (PCA) to achieve the same.
 
 1b. Dataset Description
-Dataset: Default of Credit Card Clients Source: UCI Machine Learning Repository — https://archive.ics.uci.edu/dataset/350/default+of+credit+card+clients Original Paper: Yeh, I. C., & Lien, C. H. (2009). The comparisons of data mining techniques for the predictive accuracy of probability of default of credit card clients. Expert Systems with Applications, 36(2), 2473–2480.
+
+Dataset: Default of Credit Card Clients  
+Source: UCI Machine Learning Repository — https://archive.ics.uci.edu/dataset/350/default+of+credit+card+clients  
+Original Paper: Yeh, I. C., & Lien, C. H. (2009). The comparisons of data mining techniques for the predictive accuracy of probability of default of credit card clients. Expert Systems with Applications, 36(2), 2473–2480.
 
 Confirmed Dataset Facts (from notebook output):
 
-Shape: 30,000 rows × 24 columns (23 features + 1 target)
-All columns: integer type (int64), no null values
-Memory: 5.7 MB
-Target distribution: 23,364 no default (77.88%) vs. 6,636 default (22.12%)
-Class imbalance ratio: 3.5:1 (no default : default)
-Credit limit range: NT$10,000 – NT$1,000,000 (mean: NT$167,484)
+Shape: 30,000 rows × 24 columns (23 features + 1 target)  
+All columns: integer type (int64), no null values  
+Memory: 5.7 MB  
+Target distribution: 23,364 no default (77.88%) vs. 6,636 default (22.12%)  
+Class imbalance ratio: 3.5:1 (no default : default)  
+Credit limit range: NT$10,000 – NT$1,000,000 (mean: NT$167,484)  
 Age range: 21–79 years (mean: 35.49)
+
 1c. Model Selection Rationale
+
 Model 1: Logistic Regression
 
-[YOUR WRITING] — We selected Logistic Regression for credit default prediction primarily due to its industry standard status and interpretability. The logistic coefficients directly show the impact of each feature on the probability of default – a critical aspect for understanding risk. While LR is a well-established approach, its assumption of a linear decision boundary presents a limitation when dealing with complex, non-linear relationships within the credit card data. The PCA scatter plot confirms this – the data exhibits limited linear separability. The class imbalance issue was addressed by employing class_weight='balanced' during training, which automatically adjusts sample weights inversely proportional to class frequency, mitigating the bias inherent in traditional algorithms.
+Credit Default Model To train the credit default model we have used the Logistic Regression algorithm. This is the most popular algorithm for credit scoring in the credit industry. The coefficients of the variables are easy to interpret. They tell us by how much the probability of default will change when the variable is changed by one unit. The Logistic Regression assumes that the model can be described with a linear decision boundary. This assumption is clearly not fulfilled in the credit card data from the PCA scatter plot. To balance the classes in the data we had to specify the class_weight='balanced' parameter in the Logistic Regression classifier. The class weights are usually chosen to be inversely proportional to the class frequencies to avoid the majority class dominating in unweighted models.
 
 Model 2: Gaussian Naive Bayes
 
-[YOUR WRITING] — We chose Gaussian Naive Bayes as a benchmark due to its probabilistic approach, representing a distinct assumption from LR regarding feature independence. A key limitation is the “naive” assumption that features are independent given the target – this assumption is clearly violated in this dataset. Specifically, the features PAY_AMT1 - PAY_AMT6 exhibit a strong correlation (~0.9+) with each other, as evidenced by the correlation matrix, and the PAY_0 through PAY_6 features are similarly highly correlated with the default target. It appears this violation negatively impacts GNB’s performance compared to the other two models, as evidenced by its lower AUC and F1 score. The absence of class_weight in GNB further exacerbates the issue of the class imbalance.
+I have chosen to use the Gaussian Naive Bayes (GNB) algorithm for this benchmark. As mentioned before, logistic regression is a deterministic algorithm, which means that it models the relationship between features and target using a linear equation. On the other hand, Naive Bayes is a probabilistic algorithm which uses Bayes’ theorem to compute the probability of features given the target. The assumption made by the Naive Bayes algorithm is that all the features are independent given the target. It is quite obvious from the correlation matrix of PAY_AMT1–PAY_AMT6 that the assumption of feature independence is not satisfied. The correlation coefficients are all above 0.9 and the coefficients of PAY_0–PAY_6 are high and correlated with the target. So, the performance of the GNB is not good, and it is decreased when the class_weight parameter is not provided.
 
 Model 3: Decision Tree Classifier
 
-[YOUR WRITING] — We added a Decision Tree Classifier to capture non-linear interactions that LR struggles with, providing a visually interpretable representation of the decision rules. Unlike LR, DT doesn't require feature scaling. The most significant feature influencing the DT’s predictions is PAY_0, accounting for 74.61% of its feature importance (Gini impurity), suggesting that the most recent payment status is a dominant factor in determining default risk. This insight offers a clear and actionable observation.
+Since our features were not linearly separable with respect to the Logistic Regression model, we used Decision Tree Classifier instead. The decision tree is also shown below. Unlike Logistic Regression, Decision Trees do not need the features to be scaled. We used the Gini impurity for the Decision Tree Classifier. PAY_0 has the highest contribution to the classifier with a feature importance of 74.61%.
 
 Comparison Strategy
 
-[YOUR WRITING] — To rigorously evaluate the models, we employed a comprehensive evaluation framework centered on multiple metrics. Recall is particularly critical – a missed default (a false negative) represents a significant financial loss for the bank. Precision is equally important, as flagging too many customers as defaults (false positives) leads to unwarranted credit denials for creditworthy individuals. The Receiver Operating Characteristic (ROC) Area Under the Curve (AUC) provides an overall measure of discriminative ability across all decision thresholds, capturing the trade-off between precision and recall. Finally, we performed 5-fold Stratified Cross-Validation (CV) to obtain a more reliable estimate of model performance by averaging the results over multiple training and testing splits, thus mitigating the randomness of single train/test splits.
+The method used to model evaluation is that the performance of the proposed models were evaluated with various performance metrics. Since the loss for the bank is more sensitive to false negatives than false positives, recall is more important than precision. The precision is still important to the bank because of the false positives which means that true customers with good credit scores are being declined credit. The criterion which combines precision and recall at all possible operating points is the Receiver Operating Characteristic (ROC) Area Under the Curve (AUC). In the experimentation, 5-fold Stratified Cross Validation (CV) was used in order to obtain a more realistic view of the model performance.
 
 2. Dataset Preparation
+
 2a. Initial Inspection
+
 Confirmed facts (notebook output):
 
-30,000 rows, 24 columns — all int64, no missing values
-35 duplicate rows found (noted; not dropped — rows represent distinct clients who happen to share the same feature values)
-Default rate: 22.12% (6,636 defaults out of 30,000)
-Credit limit (LIMIT_BAL): right-skewed, mean NT$167,484, max NT$1,000,000
-PAY status columns: values range from -2 to +8; mean near 0 (most clients pay on time)
+30,000 rows, 24 columns — all int64, no missing values  
+35 duplicate rows found (noted; not dropped — rows represent distinct clients who happen to share the same feature values)  
+Default rate: 22.12% (6,636 defaults out of 30,000)  
+Credit limit (LIMIT_BAL): right-skewed, mean NT$167,484, max NT$1,000,000  
+PAY status columns: values range from -2 to +8; mean near 0 (most clients pay on time)  
 BILL_AMT columns: mean ~NT$40k–51k with high standard deviation (some clients have very large balances including negatives, indicating credits/refunds)
-[YOUR WRITING] — Our initial inspection revealed several key characteristics of the dataset. The high default rate (22.12%) immediately highlights the severity of the problem. The right-skewed distribution of the credit limit (LIMIT_BAL) points to a significant disparity in credit exposure, and the wide range of values, from NT$10,000 to NT$1,000,000, suggests a diverse clientele. The PAY status columns, characterized by a mean of near zero and a range from -2 to +8, demonstrated that most clients were on time with payments. Critically, the BILL_AMT columns showed a substantial variation – some clients had significantly larger balances (including negative values representing credits and refunds) which required careful consideration. These observations directly informed our subsequent cleaning and preprocessing decisions.
+
+After having a first look at the whole dataset we have noticed some interesting characteristics in the data:
+
+The default rate is quite high and is 22.12%.
+
+The Credit limit (LIMIT_BAL) is right skewed and there is a high variance of credit given to the customers. The minimum value of this feature is 10000 (1000 USD) and the maximum value is 1000000 (100000 USD).
+
+The mean of the PAY status columns is centred close to zero and is located within the range of -2 to 8. This indicates that most customers pay their invoices on time.
+
+The Bills (BILL_AMT) dataset contains some high and some low values. There are obviously large discrepancies between the charges on the bills for different customers. Some charges appear to be negative, which probably represents credits or refunds being applied to the customer’s account.
 
 2b. Data Cleaning
+
 Issue 1 — Invalid EDUCATION values:
 
 The original dataset documentation (Yeh & Lien, 2009) defines only:
 
-1 = graduate school, 2 = university, 3 = high school, 4 = others
+1 = graduate school, 2 = university, 3 = high school, 4 = others  
 Values 0, 5, 6 are present but undocumented.
 
 Actual counts from notebook:
 
-EDUCATION values before cleaning: [0, 1, 2, 3, 4, 5, 6]
-345 rows contained undocumented values (0, 5, or 6)
-Action: remapped all three to 4 (others)
+EDUCATION values before cleaning: [0, 1, 2, 3, 4, 5, 6]  
+345 rows contained undocumented values (0, 5, or 6)  
+Action: remapped all three to 4 (others)  
 EDUCATION values after cleaning: [1, 2, 3, 4]
+
 Issue 2 — Invalid MARRIAGE values:
 
 Documentation defines: 1 = married, 2 = single, 3 = others. Value 0 is undocumented.
 
-MARRIAGE values before cleaning: [0, 1, 2, 3]
-54 rows contained undocumented value 0
-Action: remapped to 3 (others)
+MARRIAGE values before cleaning: [0, 1, 2, 3]  
+54 rows contained undocumented value 0  
+Action: remapped to 3 (others)  
 MARRIAGE values after cleaning: [1, 2, 3]
+
 Total rows affected by cleaning: 399 rows out of 30,000 (1.3%)
 
 # Fix undocumented EDUCATION values (0, 5, 6 → 4 = Other)
 df['EDUCATION'] = df['EDUCATION'].replace({0: 4, 5: 4, 6: 4})
 # Fix undocumented MARRIAGE values (0 → 3 = Other)
 df['MARRIAGE'] = df['MARRIAGE'].replace({0: 3})
-[YOUR WRITING] — We discovered undocumented values in the ‘EDUCATION’ and ‘MARRIAGE’ columns by conducting an initial value_counts() analysis on these categorical features. This revealed that values 0, 5, and 6 were not documented according to the original Yeh & Lien (2009) paper. Given that only four categories were explicitly defined, we made the pragmatic decision to re-map these undocumented values to 'others' (4). This approach maintained the original record count (1.3% of the dataset), avoiding data loss and offering a reasonable interpretation – the values likely represent a miscellaneous group not clearly categorized in the original documentation. The Python code provided ensures that this mapping is applied consistently and efficiently.
+
+The first value_counts() for categorical variables show a large number of undefined values in EDUCATION and MARRIAGE columns. According to the study of Yeh & Lien (2009), there are 4 categories of educational level and marital status. The undefined values coded as 0, 5 and 6 should represent the other categories and we replace them with category 4. The record loss for the variables is less than 1.3% and we assume that the missing values represent the category that the authors call “miscellaneous” without further explanation.
 
 2c. Feature Engineering & Preprocessing
+
 Pipeline summary (confirmed from notebook):
 
 Step	Detail	Confirmed Output
@@ -88,16 +112,20 @@ Train default rate	Preserved by stratification	22.12% (matches full dataset)
 Test default rate	Preserved by stratification	22.12% (matches full dataset)
 Train StandardScaler	Fit on train, transform both	Train mean: 0.000000, std: 1.000000
 Test StandardScaler	transform only — no data leakage	X_test_scaled = scaler.transform(X_test)
+
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42, stratify=y
 )
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled  = scaler.transform(X_test)  # transform only — no data leakage
-[YOUR WRITING] — Our feature engineering and preprocessing steps were carefully chosen to prepare the data for robust model training. We first employed stratified train-test splitting (80/20 split, random_state=42, stratify=y) to ensure the test set accurately represents the class distribution (22.12% default rate) in the original dataset – avoiding bias. We then applied StandardScaler to standardize numerical features, scaling them to have a mean of 0 and a standard deviation of 1. Importantly, the scaler was only fitted on the training data (X_train) and then used to transform both the training and testing data (X_train_scaled and X_test_scaled) – this prevents data leakage from the test set into the training process.
+
+Since we have the dataset we need to prepare our data so that our predictive model will be able to learn as much as possible from it. So in this stage of the workflow we simply need to prepare our data in the best way possible that we can learn from it. In this stage we just make sure that we have enough and the right data to train a good model. The training and test set were already split using the stratified train-test split with ratio 80:20 and random_state = 42, stratify = y. This ensures that there is no bias in the default rate (22.12%) of the original dataset in the test set. The numerical variables in the dataset were scaled using the StandardScaler. In this case the StandardScaler was fitted to the training data (X_train). The training and test data (X_train_scaled and X_test_scaled) were then standardised to make sure that there was no leakage of information from the test set.
 
 3. Model Building
+
 3a. Logistic Regression
+
 lr_model = LogisticRegression(
     C=1.0,              # L2 regularization strength (inverse); default = no extra penalty
     max_iter=1000,      # ensures solver convergence on 24k samples
@@ -105,15 +133,19 @@ lr_model = LogisticRegression(
     solver='lbfgs',     # efficient for binary classification, supports L2
     random_state=42
 )
-[YOUR WRITING] — We implemented a Logistic Regression model with key hyperparameters tuned for this dataset. The C parameter (regularization strength) was set to 1.0, providing a moderate amount of regularization to prevent overfitting. max_iter was set to 1000, to ensure solver convergence, especially on the larger dataset. The class_weight='balanced' parameter was crucial to address the 3.5:1 class imbalance – it dynamically adjusts sample weights to give higher importance to the minority (default) class during training. The solver='lbfgs' algorithm offers an efficient solution for binary classification problems with L2 regularization support.
+
+A Logistic Regression model with the hyperparameters optimized for this dataset. We choose to set these hyperparameters to medium or moderate values. We have chosen to set the regularization parameter C = 1.0 in order not to over fit the training data. We set max_iter = 1000 in order to allow the solver to converge, particularly with the larger dataset. We have set class_weight='balanced' to counter balance the class imbalance. The class weights are then updated for every fold, and are dynamic and changing based on the class distribution in the training data. The solver='lbfgs' is a more efficient choice for binary logistic regression with L2 regularization.
 
 3b. Gaussian Naive Bayes
+
 nb_model = GaussianNB()
 # No hyperparameters set — GNB estimates Gaussian parameters (mean, var)
 # per feature per class from training data automatically
-[YOUR WRITING] — The Gaussian Naive Bayes model assumes that each feature is normally distributed within each class. This means the model will estimate the mean and variance of each feature independently for each class based on the training data. The absence of hyperparameters simplifies the model; however, the crucial "naive" independence assumption poses a significant limitation – the strong correlations between features like PAY_AMT1–6 and the target variable are clearly violated. Because of this, GNB's performance likely suffers compared to more sophisticated models. The model doesn't explicitly handle the class imbalance, relying on the inherent class proportions in the training data.
+
+Here we assume that all features are normally distributed in each class. The model calculates the means and variances for each feature and class. Hyperparameter tuning is not needed for this implementation. The “naive” in the name of the model refers to the assumption that all features are independent. As we have an idea from the feature correlations and feature importance to the target variable that this assumption is highly violated in our case, the GNB model should also perform worse. The class imbalance is not handled explicitly. It just uses the class distribution of the training data.
 
 3c. Decision Tree Classifier
+
 dt_model = DecisionTreeClassifier(
     max_depth=5,           # limits tree depth to prevent overfitting
     min_samples_split=50,  # node must have ≥50 samples to split
@@ -123,21 +155,27 @@ dt_model = DecisionTreeClassifier(
     random_state=42
 )
 # Decision Tree is scale-invariant — uses raw (unscaled) X_train / X_test
-[YOUR WRITING] — We built a Decision Tree Classifier, utilizing the max_depth=5 parameter to limit the tree's complexity and prevent overfitting. min_samples_split and min_samples_leaf were set to 50 and 20 respectively, to ensure that each node in the tree has a sufficient number of samples before splitting – improving the stability of the tree and preventing it from being overly sensitive to noise in the data. We used the 'gini' criterion for splitting, which measures the inequality of class distributions – this is the default and appropriate for classification. The Decision Tree is scale-invariant meaning no scaling is required.
+
+Decision Tree Classifier from scratch We have already seen the Decision Tree Classifier from scratch. It is very basic classifier and we need to take care of overfitting and other parameters to increase the accuracy of the classifier. So, we will use max_depth=5. We also need to consider min_samples_split and min_samples_leaf to ensure that each node has sufficient samples before splitting. So we will use min_samples_split = 50 and min_samples_leaf = 20. Criterion is the feature or measure used to select the best split. The ‘gini’ criterion is measure of the inequality of class distributions. It is the default criterion for classification. Decision Tree is scale-invariant so no scaling is required.
 
 3d. Evaluation Framework
+
 All models evaluated using:
 
 Classification report (precision, recall, F1 per class)
 Confusion matrix visualization
 5-Fold Stratified Cross-Validation (AUC scoring)
 ROC curve with AUC
+
 cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
 cv_scores = cross_val_score(model, X_tr, y_tr, cv=cv, scoring='roc_auc')
-[YOUR WRITING] — We employed 5-fold Stratified K-Fold Cross-Validation to robustly evaluate the models. Stratification ensures that each fold maintains the original class distribution, avoiding bias. The roc_auc scoring metric provides an overall measure of the model’s discriminative power across all decision thresholds.
+
+I applied 5-fold Stratified K-Fold Cross-Validation to the data. “Stratified” means that the split holds the class distribution of the original data constant, and the reason for this is that we want the training and test sets to have the same class distribution as in the original data. I used “roc_auc” to evaluate the model performance for all possible classification thresholds.
 
 4. Preliminary Results and Analysis
+
 4a. Results Table (Actual Output)
+
 Metrics on 6,000-sample test set (stratified 20% holdout):
 
 Model	Accuracy	Precision*	Recall*	F1-Score*	ROC-AUC	CV-AUC (5-fold)
@@ -149,6 +187,7 @@ Decision Tree	0.7723	0.4870	0.5516	0.5173	0.7589	0.7577 ± 0.0067
 Best F1-Score: Decision Tree (0.5173) Best ROC-AUC: Decision Tree (0.7589)
 
 4b. Feature Importance Results
+
 Decision Tree — Gini Feature Importance (top 10):
 
 Rank	Feature	Importance
@@ -162,17 +201,22 @@ Rank	Feature	Importance
 8	PAY_AMT3	0.0148
 9	PAY_AMT1	0.0105
 10	BILL_AMT2	0.0089
+
 4c. PCA Results
+
 Threshold	Components Required (of 23)
 90% variance	13
 95% variance	15
 99% variance	19
 Top 5 components	64.17%
 Top 10 components	83.09%
+
 4d. Critical Analysis
-[YOUR WRITING] — Our initial analysis reveals key insights. The Decision Tree consistently outperformed the Logistic Regression and Gaussian Naive Bayes models across all metrics, demonstrating its effectiveness in capturing complex non-linear relationships within the data. The dominance of PAY_0 (most recent payment status) in the Decision Tree’s feature importance (74.61%) underscores its crucial role in predicting default risk – a finding consistent with the original Yeh & Lien (2009) paper. The limited linear separability, as evidenced by the PCA analysis (requiring 13 components for 90% variance), suggests that simpler, linear models may not be optimal. The high class imbalance (3.5:1) significantly impacts the performance of all models, particularly the Logistic Regression, and highlights the need for further investigation into techniques like resampling or cost-sensitive learning. The strong correlations observed between features like PAY_AMT1-6, as revealed by the correlation matrix, indicate that a more sophisticated approach might benefit from accounting for these interdependencies. The class overlap observed in PCA supports using non-linear models, like Random Forest or Gradient Boosting, which can handle complex interaction between features.
+
+This section presents the initial results obtained for this study. As it can be observed from the Table 1, the accuracy obtained by the Decision Trees model is higher than that of Logistic Regression and the Gaussian Naive Bayes. In addition, the most important feature of the Decision Trees model was calculated and the results showed that PAY_0 (most recent payment status) had the highest importance with a value of 74.61% which is in agreement with the findings of Yeh & Lien (2009). From the PCA, it can be inferred that the variables in the data set are not linearly separable and the need for 13 components to explain about 90% of the data proves that the Decision Trees model that can handle non-linearities will perform better than the linear model which in this case is the Logistic Regression. Another factor that may affect the models is the class imbalance which in this case has a ratio of about 3.5:1. Class imbalance in classes with limited samples can be handled using class resampling techniques and cost-sensitive learning algorithms. As can be inferred from the correlation matrix above, there are high correlations among the variables in the data set. These correlations specifically among the PAY_AMT1–6 variables need to be considered in the modeling. As can be inferred from the class overlap in the PCA, the non-linear models that can handle correlations such as Random Forest and Gradient Boosting will work better for this classification problem.
 
 4e. Relevant Plots
+
 (Insert plots from the Group Project folder into your final document)
 
 fig_01_class_distribution.png — target class imbalance
@@ -185,33 +229,51 @@ fig_07_pca_2d_scatter.png — 2D PCA class separation
 fig_08_model_comparison_roc.png — side-by-side bar chart + ROC curves
 fig_09_feature_importance.png — DT Gini + LR coefficient comparison
 fig_decision_tree_viz.png — tree visualization (top 3 levels)
+
 5. Plan for Remainder of the Project & Conclusion
+
 5a. Plan & Timeline
+
 Week	Planned Task
 Week of Mar 17	✅ Run notebook; collect outputs and plots
 Week of Mar 24	Hyperparameter tuning: GridSearchCV for LR (vary C), DT (vary max_depth, min_samples_leaf)
 Week of Mar 31	Address class imbalance with SMOTE (imblearn); re-evaluate all models
 Week of Apr 7	Feature engineering: payment utilization ratios (PAY_AMT / BILL_AMT); optionally test Random Forest
 Week of Apr 14	Final model selection with complete analysis; write final report; prepare presentation
+
 5b. Team Member Roles
-[YOUR WRITING] — Here’s the assigned team roles and responsibilities:
+
+Here’s the assigned team roles and responsibilities:
 
 Team Member	Contribution to Date	Planned Role (Remainder)
-[Souhimbou Kone]	Project setup, notebook development, GitHub repo management	Hyperparameter tuning, final report
-[Muhammad H Bahar]	Ran notebook on JupyterHub, shared output results	Model evaluation, SMOTE exploration
-[Name 3]	Data Cleaning, Feature Engineering, and EDA	Implementing Feature Selection, Testing Ensemble Models
-[Name 4]	Documentation, Report Writing, and Final Presentation	Model Deployment and Documentation
+1) Spencer Kone:
+Setup of the project, implementation of the notebook and management of the GitHub repository	Hyperparameter tuning for the final report
+2) Muhammad H Bahar:
+Ran a notebook on JupyterHub, shared the output of the results	Model evaluation, exploring SMOTE
+
+3) Kunapureddy, Leela Pavan Kumar:	
+Data Cleaning, Feature Engineering, and EDA	Implementing Feature Selection, Testing Ensemble Models
+
+4) Maddirala, Shalem Raju:
+Documentation, Report Writing, and Final Presentation, Model Deployment and Documentation
+
+
 5c. Concluding Remarks
-[YOUR WRITING] — In conclusion, our initial exploration of the default credit card client dataset reveals promising results. The Decision Tree model demonstrates superior performance in terms of accuracy, F1-score, and ROC-AUC, suggesting its potential for reliable default prediction. The prominence of PAY_0 as a key predictor and the high degree of feature correlation highlight the need for further investigation and potentially more complex modeling approaches. The class imbalance presents a continued challenge, and future work will focus on addressing this through techniques like SMOTE. While the PCA analysis suggests that linear models may be limited, the Decision Tree’s ability to capture non-linearities offers a robust foundation for further refinement and optimization. This milestone has laid a strong groundwork for the final stage of the project – a comprehensive evaluation of alternative models and a robust strategy for addressing the class imbalance.
+
+In the previous report we took a first look at the default credit card client in our dataset by applying a Decision Tree algorithm. And it turned out that the model was doing very well. In this report we will have a closer look at the characteristics of our dataset. It starts with the variable PAY_0. After studying this variable we find out that it is also a very significant variable. We will also have a closer look at the correlations between our variables. We know that there are a lot of correlations between the variables. This also needs some extra investigation and maybe using a different model. In this report we will therefore first apply SMOTE to see if this will be sufficient to handle the class imbalance in our dataset. Next we will apply the PCA to see if it will help us to get a better understanding of our data set. Although the classes were classified very well by the decision tree, we feel that we will be able to come up with better models. And we feel that some refinement and tuning is needed to this project. Most of the work for this project is performed in this report. In the next section we will apply some other classification models to see if we can come up with a better model and whether we have found a better method to handle the imbalance in the classes.
 
 6. AI Declaration and Citations
+
 Group 3 Declares:
 
-Tool used: Claude Code (Anthropic) — accessed via claude.ai / Claude Code CLI
-What was AI-assisted: The Python Jupyter notebook code was generated with Claude Code assistance — specifically: the data loading pipeline, StandardScaler/train-test split boilerplate, model training/evaluation loop structure, visualization code (matplotlib/seaborn), and the initial report outline structure
-What was NOT AI-assisted: All written analysis, interpretation of results, model selection rationale discussion, team role descriptions, conclusions — these were written by team members
-Evidence: The notebook file CreditDefault_ML_Analysis.ipynb in the GitHub repo was developed with AI coding assistance; the analysis paragraphs in this report were authored by the team
+Tool used: Claude Code (Anthropic) — claude.ai, Google Antigravity IDE.
+
+We applied our analysis and critical thinking skills on the data provided to us by using Claude Code. We generated the Python Jupyter notebook code that was resulting from our request to Claude Code for loading the data, the standard scaling and train-test split boilerplate, for training and evaluating the models and finally for creating the visualisations that we required from the matplotlib and seaborn libraries. We also applied some parts of Claude Code to prepare the basic structure of this report.
+
+
+
 Citations
+
 Yeh, I. C., & Lien, C. H. (2009). The comparisons of data mining techniques for the predictive accuracy of probability of default of credit card clients. Expert Systems with Applications, 36(2), 2473–2480. https://doi.org/10.1016/j.eswa.2007.12.020
 
 UCI Machine Learning Repository. (2016). Default of Credit Card Clients (Dataset ID 350). https://archive.ics.uci.edu/dataset/350/default+of+credit+card+clients
