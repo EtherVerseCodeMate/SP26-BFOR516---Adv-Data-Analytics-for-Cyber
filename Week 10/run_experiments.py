@@ -22,9 +22,7 @@ from tensorflow.keras.layers import SimpleRNN, LSTM, Dense, Dropout, Bidirection
 from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.optimizers import Adam
 
-# ─────────────────────────────────────────────
 # CONFIGURATION
-# ─────────────────────────────────────────────
 SEED = 42
 np.random.seed(SEED)
 tf.random.set_seed(SEED)
@@ -35,9 +33,7 @@ TEST_DAYS = 10
 EPOCHS    = 50
 BATCH     = 16
 
-# ─────────────────────────────────────────────
 # HELPERS
-# ─────────────────────────────────────────────
 
 def load_data():
     df = pd.read_csv(DATA_PATH)
@@ -152,7 +148,7 @@ def run_block(window, label, rnn_kwargs=None, lstm_kwargs=None,
 
     # --- Plot: Predicted vs Actual ---
     test_dates = dates[-(TEST_DAYS):]
-    fig, ax = plt.subplots(figsize=(11, 5))
+    _, ax = plt.subplots(figsize=(11, 5))
     ax.plot(test_dates, actual,    label='Actual',   color='black', linewidth=2)
     ax.plot(test_dates, rnn_pred,  label='Vanilla RNN', color='royalblue', linestyle='--', marker='o', markersize=4)
     ax.plot(test_dates, lstm_pred, label='LSTM',     color='crimson',   linestyle='--', marker='s', markersize=4)
@@ -169,7 +165,7 @@ def run_block(window, label, rnn_kwargs=None, lstm_kwargs=None,
     print(f"  Plot saved: {plot_path}")
 
     # --- Plot: Training loss ---
-    fig2, ax2 = plt.subplots(figsize=(10, 4))
+    _, ax2 = plt.subplots(figsize=(10, 4))
     ax2.plot(rnn_hist.history['val_loss'],  label='RNN Val Loss',  color='royalblue')
     ax2.plot(lstm_hist.history['val_loss'], label='LSTM Val Loss', color='crimson')
     ax2.set_title(f'Validation Loss — {label} | Window={window}')
@@ -227,9 +223,20 @@ b4 = run_block(
     callbacks=[es]
 )
 
-# ─────────────────────────────────────────────
 # WRITE output_metrics.txt
-# ─────────────────────────────────────────────
+if b1['rnn']['rmse'] <= b2['rnn']['rmse'] and b1['rnn']['rmse'] <= b3['rnn']['rmse']:
+    best_rnn_label = "W=40"
+elif b2['rnn']['rmse'] <= b3['rnn']['rmse']:
+    best_rnn_label = "W=60"
+else:
+    best_rnn_label = "W=80"
+
+if b1['lstm']['rmse'] <= b2['lstm']['rmse'] and b1['lstm']['rmse'] <= b3['lstm']['rmse']:
+    best_lstm_label = "W=40"
+elif b2['lstm']['rmse'] <= b3['lstm']['rmse']:
+    best_lstm_label = "W=60"
+else:
+    best_lstm_label = "W=80"
 metrics_txt = f"""
 BFOR516 Week 10 Lab — AAPL Stock Prediction
 Model Performance Summary (All Runs)
@@ -248,8 +255,8 @@ RNN  (Tuned)    |   60   | {b4['rnn']['rmse']:10.4f} | {b4['rnn']['mae']:10.4f} 
 LSTM (Tuned)    |   60   | {b4['lstm']['rmse']:10.4f} | {b4['lstm']['mae']:10.4f} | {b4['lstm']['mape']:8.2f}%
 
 ================================================================
-BEST BASELINE RNN  (lowest RMSE): {"W=40" if b1['rnn']['rmse'] <= b2['rnn']['rmse'] and b1['rnn']['rmse'] <= b3['rnn']['rmse'] else ("W=60" if b2['rnn']['rmse'] <= b3['rnn']['rmse'] else "W=80")}
-BEST BASELINE LSTM (lowest RMSE): {"W=40" if b1['lstm']['rmse'] <= b2['lstm']['rmse'] and b1['lstm']['rmse'] <= b3['lstm']['rmse'] else ("W=60" if b2['lstm']['rmse'] <= b3['lstm']['rmse'] else "W=80")}
+BEST BASELINE RNN  (lowest RMSE): {best_rnn_label}
+BEST BASELINE LSTM (lowest RMSE): {best_lstm_label}
 """
 
 metrics_path = os.path.join(OUT_DIR, 'output_metrics.txt')
