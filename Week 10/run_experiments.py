@@ -38,7 +38,7 @@ BATCH     = 16
 def load_data():
     df = pd.read_csv(DATA_PATH)
     df['Date'] = pd.to_datetime(df['Date'])
-    df['Close'] = df['Close/Last'].replace('[\$,]', '', regex=True).astype(float)
+    df['Close'] = df['Close/Last'].replace(r'[\$,]', '', regex=True).astype(float)
     df = df.sort_values('Date').reset_index(drop=True)
     return df[['Date', 'Close']]
 
