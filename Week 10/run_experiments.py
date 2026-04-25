@@ -100,9 +100,10 @@ def run_block(window, label, rnn_kwargs=None, lstm_kwargs=None,
     prices = df['Close'].values
     dates  = df['Date'].values
 
-    # --- Scale ---
+    # --- Scale (fit on training partition only to prevent leakage) ---
     scaler = MinMaxScaler()
-    scaled = scaler.fit_transform(prices.reshape(-1, 1)).flatten()
+    scaler.fit(prices[:-TEST_DAYS].reshape(-1, 1))
+    scaled = scaler.transform(prices.reshape(-1, 1)).flatten()
 
     # --- Train/test split (keep final TEST_DAYS as test) ---
     train_raw = scaled[:-TEST_DAYS]
