@@ -1,0 +1,67 @@
+{
+  "dataset": {
+    "total_records": 30000,
+    "features": 23,
+    "default_rate": "22.12%",
+    "no_default_count": 23364,
+    "default_count": 6636,
+    "imbalance_ratio": "3.5:1",
+    "avg_credit_limit": 167484,
+    "avg_age": 35,
+    "train_size": 24000,
+    "test_size": 6000,
+    "missing_values": 0,
+    "duplicate_rows": 35
+  },
+  "pca": {
+    "components_90pct": 13,
+    "components_95pct": 15,
+    "components_99pct": 19,
+    "top5_variance": "64.2%"
+  },
+  "models": {
+    "Logistic Regression": {
+      "Accuracy": 0.6795,
+      "Precision": 0.3671,
+      "Recall": 0.6202,
+      "F1-Score": 0.4612,
+      "ROC-AUC": 0.7084,
+      "CV_AUC_Mean": 0.7264,
+      "CV_AUC_Std": 0.0106
+    },
+    "Naive Bayes": {
+      "Accuracy": 0.7518,
+      "Precision": 0.4504,
+      "Recall": 0.5539,
+      "F1-Score": 0.4968,
+      "ROC-AUC": 0.7248,
+      "CV_AUC_Mean": 0.7365,
+      "CV_AUC_Std": 0.0102
+    },
+    "Decision Tree": {
+      "Accuracy": 0.7723,
+      "Precision": 0.487,
+      "Recall": 0.5516,
+      "F1-Score": 0.5173,
+      "ROC-AUC": 0.7589,
+      "CV_AUC_Mean": 0.7577,
+      "CV_AUC_Std": 0.0067
+    }
+  },
+  "best": {
+    "f1_model": "Decision Tree",
+    "auc_model": "Decision Tree"
+  },
+  "figures": {
+    "fig01": "images\\fig_01_class_distribution.png",
+    "fig02": "images\\fig_02_demographic_default_rates.png",
+    "fig03": "images\\fig_03_age_analysis.png",
+    "fig04": "images\\fig_04_payment_history.png",
+    "fig05": "images\\fig_05_correlation_heatmap.png",
+    "fig06": "images\\fig_06_pca_variance.png",
+    "fig07": "images\\fig_07_pca_2d_scatter.png",
+    "fig08": "images\\fig_08_model_comparison_roc.png",
+    "fig09": "images\\fig_09_feature_importance.png",
+    "fig_dt_viz": "images\\fig_decision_tree_viz.png"
+  }
+}
