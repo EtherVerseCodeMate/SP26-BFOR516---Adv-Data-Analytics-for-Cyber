@@ -63,5 +63,36 @@
     "fig08": "images\\fig_08_model_comparison_roc.png",
     "fig09": "images\\fig_09_feature_importance.png",
     "fig_dt_viz": "images\\fig_decision_tree_viz.png"
-  }
+  },
+  "feature_importance": {
+    "PAY_0": 0.7461,
+    "PAY_AMT2": 0.0737,
+    "PAY_4": 0.0372,
+    "LIMIT_BAL": 0.0276,
+    "PAY_3": 0.0225,
+    "PAY_2": 0.02,
+    "PAY_AMT4": 0.015,
+    "PAY_AMT3": 0.0148,
+    "PAY_AMT1": 0.0105,
+    "BILL_AMT2": 0.0089,
+    "AGE": 0.0048,
+    "PAY_5": 0.0044,
+    "BILL_AMT1": 0.004,
+    "PAY_6": 0.004,
+    "PAY_AMT5": 0.0022,
+    "EDUCATION": 0.0022,
+    "BILL_AMT4": 0.0019,
+    "MARRIAGE": 0.0,
+    "SEX": 0.0,
+    "BILL_AMT3": 0.0,
+    "BILL_AMT6": 0.0,
+    "BILL_AMT5": 0.0,
+    "PAY_AMT6": 0.0
+  },
+  "pay0_importance_pct": 74.61,
+  "top3_features": [
+    "PAY_0",
+    "PAY_AMT2",
+    "PAY_4"
+  ]
 }
