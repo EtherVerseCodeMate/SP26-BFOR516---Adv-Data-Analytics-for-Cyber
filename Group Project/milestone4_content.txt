@@ -1,0 +1,84 @@
+﻿=== PAGE 1 ===
+BFOR516 - Spring 2026 (Final Report) 
+ 
+The final report is the culmination of your group project. It builds directly on the work you 
+submitted in your progress report, and should reflect all iterations, improvements, and new 
+insights developed since then. Everything in this report should represent your final, polished 
+analysis - not preliminary findings. There is no page limit, but the overall content should be 
+commensurate with the scope of the project you proposed. 
+ 
+Your final report should read as a complete, standalone document. A reader unfamiliar 
+with your progress report should be able to fully understand your project from this 
+submission alone. 
+ 
+1.​ Project description and objectives: Provide a comprehensive description of your 
+project's objective and the models you applied to your chosen dataset.  
+a.​ If your objective evolved over the course of the project, describe how and why it 
+changed from what was originally proposed.  
+b.​ Describe your dataset, where you procured it, and your rationale for selecting it. 
+Describe all models you built (~2–3 machine learning models).  
+c.​ Provide the rationale behind your final model selection, how each model relates 
+to your objective, and how you ultimately chose to compare them. 
+2.​ Dataset preparation: Provide a thorough description of your finalized data cleaning and 
+preparation pipeline. This should reflect any changes or improvements made since your 
+progress report. 
+a.​ Describe what cleaning your dataset required and how you identified those 
+needs. 
+b.​ Explain how you prepared your features for model input, and justify the choices 
+made during this process. 
+c.​ Include all other relevant preprocessing steps, along with well-commented code 
+snippets. 
+3.​ Model building: Describe the complete process of building your machine learning 
+models, including all key design decisions. This should reflect the full iterative process 
+from initial design to your final implementation. 
+a.​ Describe your final model architectures and the hyperparameter choices you 
+made, along with the reasoning behind them. 
+b.​ If your model design changed significantly since the progress report, explain what 
+drove those changes. 
+c.​ Include relevant code snippets and any visualizations that illustrate your model 
+building process. 
+4.​ Final results and analysis: Present and critically analyze your final model outputs with 
+respect to the project objectives. This section should go well beyond the preliminary 
+results submitted earlier. 
+a.​ Report your final model performance using appropriate evaluation metrics. 
+Compare model performance against each other and against any relevant 
+benchmarks. 
+
+=== PAGE 2 ===
+b.​ Critically interpret the results - do they align with your initial expectations? If not, 
+analyze why. 
+c.​ Support your analysis with well-labeled plots, tables, and other visualizations. 
+Describe what each visualization tells you about your model's behavior. 
+5.​ Limitations and future work: Reflect honestly on the limitations of your project and 
+discuss directions for future work. 
+a.​ What are the limitations of your dataset (size, biases, missing data, 
+representativeness)? 
+b.​ What are the limitations of the models or approaches you used? Are there 
+aspects of the problem your models do not capture well? 
+c.​ If you had more time or resources, what would you do differently or explore next? 
+This could include alternative models, additional data sources, or more 
+sophisticated feature engineering. 
+6.​ Team contributions and conclusion: Describe each team member's contribution 
+throughout the entire project - from initial ideation to the final submission. This should 
+clearly reflect distinct individual contributions rather than a generic shared description. 
+Conclude with reflective remarks on what your team learned, what went well, and what 
+you would approach differently if starting over. 
+7.​ AI declaration and citations: You must include a paragraph clearly declaring and 
+describing how AI tools were used throughout this project. Identify which tool(s) you 
+used, which portions of work were AI-assisted, and why. Even if your entire codebase is 
+AI-generated, you must declare it and provide supporting evidence (for e.g., 
+conversation thread with an AI agent that assisted you in this work). Cite all external 
+sources including datasets, papers, and libraries. Remember: AI tools should assist your 
+thinking, not replace it. All analysis and writing must reflect your own 
+understanding.  
+ 
+Writing that appears to be AI-generated will be severely penalized (FYI: It is 
+extremely easy to spot). I am not grading you or assessing you on your writing 
+skills, use of fancy words, or overly embellished sentences - I am grading your 
+analytical skills, and your work. You are not bots, you are human beings. Your 
+brain is much more authentic and has much higher reasoning skills than an AI bot 
+- I hope you remember that and do not succumb to the overly-generic and 
+redundant responses produced by a bot.  
+ 
+ 
+
