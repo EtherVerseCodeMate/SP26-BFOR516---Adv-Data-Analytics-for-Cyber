@@ -385,19 +385,26 @@ fig("fig_decision_tree_viz.png",
 
 h("3e. Hyperparameter Exploration", 2)
 p(
-    "We explored hyperparameters for both tunable models. "
-    "For Logistic Regression, we tested C ∈ {0.01, 0.1, 1.0, 10.0}. "
-    "C=1.0 yielded the best CV-AUC; larger C values showed marginal recall gains "
-    "but increased variance across folds. "
-    "For the Decision Tree, we tested max_depth ∈ {3, 5, 7, 10} and "
-    "min_samples_leaf ∈ {10, 20, 50}. The combination of depth=5, leaf=20 "
-    "produced the most stable CV performance. "
     "These experiments confirmed our initial hyperparameter choices rather than replacing them — "
-    "a reassuring sign that our original reasoning was well-grounded. "
-    "SMOTE (Synthetic Minority Oversampling Technique) was evaluated as an alternative "
-    "to class_weight='balanced'. SMOTE improved recall by approximately 5 percentage points "
-    "but produced a marginal net effect on F1 and introduced complexity in the validation pipeline. "
-    "We retained class_weight='balanced' as cleaner and equally effective for this dataset size."
+    "a reassuring sign that our original reasoning was well-grounded."
+)
+p(
+    "SMOTE Resampling was a formal second phase of our model improvement effort, executed after "
+    "the GridSearchCV sweep. Using imblearn's SMOTE (Synthetic Minority Oversampling Technique), "
+    "we synthesized new minority-class (default) samples in the training set to address the 3.5:1 "
+    "class imbalance directly at the data level, rather than through loss weighting alone. "
+    "SMOTE interpolates between existing minority samples in feature space, generating synthetic "
+    "points along the line segments connecting a sample to its k nearest minority-class neighbors. "
+    "Critically, SMOTE was applied only to the training partition; the held-out test set and each "
+    "CV fold's validation portion remained untouched to prevent synthetic data leakage. "
+    "Results: recall for the default class improved by approximately 5 percentage points across models, "
+    "but net F1 gain was marginal because the precision drop largely offset the recall improvement. "
+    "SMOTE also introduced pipeline complexity, requiring a Pipeline wrapper to ensure resampling "
+    "occurred inside each CV fold rather than before splitting. "
+    "We ultimately retained class_weight='balanced' as our primary imbalance strategy "
+    "because it was equally effective for this dataset size and substantially simpler to audit "
+    "and reproduce. As captured in our Milestone 3 Presentation (Slide 13 key takeaway): "
+    "'Class imbalance must be handled — balanced weighting was critical; SMOTE tested in final stage.'"
 )
 
 h("3f. Evaluation Framework", 2)
